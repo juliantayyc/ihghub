@@ -40,12 +40,12 @@ export const navigation = [
   {
     id: "0",
     title: "Leaderboard",
-    url: "#leaderboard",
+    url: "/#leaderboard",
   },
   {
     id: "1",
-    title: "Pricing",
-    url: "#pricing",
+    title: "Fixtures",
+    url: "/fixtures",
   },
   {
     id: "2",
