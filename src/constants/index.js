@@ -39,8 +39,8 @@ import {
 export const navigation = [
   {
     id: "0",
-    title: "Features",
-    url: "#features",
+    title: "Leaderboard",
+    url: "#leaderboard",
   },
   {
     id: "1",

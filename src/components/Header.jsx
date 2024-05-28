@@ -7,6 +7,7 @@ import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";
 import { HamburgerMenu } from "./design/Header";
 import { useState } from "react";
+import Logo from "../assets/sportslogo.svg";
 
 const Header = () => {
   const pathname = useLocation();
@@ -36,8 +37,9 @@ const Header = () => {
       }`}
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
-        <a className="block w-[12rem] xl:mr-8" href="#hero">
-          <img src={brainwave} width={190} height={40} alt="Brainwave" />
+        <a className="flex items-center w-[12rem] xl:mr-8" href="#hero">
+          <img src = {Logo} width={40} height={40} alt="IHG Hub" />
+          <span className ="ml-2">IHG Hub</span>
         </a>
 
         <nav
