@@ -1,13 +1,13 @@
-import { curve, heroBackground, robot } from "../assets";
-import Button from "./Button";
-import Section from "./Section";
-import { BackgroundCircles, BottomLine, Gradient } from "./design/Hero";
-import { heroIcons } from "../constants";
-import { ScrollParallax } from "react-just-parallax";
-import { useRef } from "react";
-import Generating from "./Generating";
-import Notification from "./Notification";
-import CompanyLogos from "./CompanyLogos";
+import { curve, heroBackground, robot } from '../assets';
+import Button from './Button';
+import Section from './Section';
+import { BackgroundCircles, BottomLine, Gradient } from './design/Hero';
+import { heroIcons } from '../constants';
+import { ScrollParallax } from 'react-just-parallax';
+import { useRef } from 'react';
+import Generating from './Generating';
+import Notification from './Notification';
+import CompanyLogos from './CompanyLogos';
 
 const Hero = () => {
   const parallaxRef = useRef(null);
@@ -20,12 +20,15 @@ const Hero = () => {
       customPaddings
       id="hero"
     >
-      <div className="container relative" ref={parallaxRef}>
+      <div
+        className="container relative"
+        ref={parallaxRef}
+      >
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
           <h1 className="h1 mb-6">
             Welcome to {` `}
             <span className="inline-block relative">
-              IHG Hub{" "}
+              IHG Hub{' '}
               <img
                 src={curve}
                 className="absolute top-full left-0 w-full xl:-mt-2"
@@ -38,7 +41,10 @@ const Hero = () => {
           <p className="body-1 max-w-3xl mx-auto mb-6 text-n-2 lg:mb-8">
             Your one stop solution to all things IHG.
           </p>
-          <Button href="/pricing" black>
+          <Button
+            href="/pricing"
+            black
+          >
             Get started
           </Button>
         </div>
@@ -46,11 +52,9 @@ const Hero = () => {
           <div className="relative z-1 p-0.5 rounded-2xl bg-color-1 border border-black">
             <div className="relative bg-n-8 rounded-[1rem]">
               <div className="h-[1.4rem] bg-n-10 rounded-t-[0.9rem]" />
-                <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
-                  <h1 className="h3 mb-6">
-                    Today's games:
-                  </h1>
-                </div>
+              <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
+                <h1 className="h3 mb-6">Today's games:</h1>
+              </div>
               <div className="aspect-[33/40] rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
                 {/* <img
                   src={robot}
@@ -98,7 +102,7 @@ const Hero = () => {
 
         {/* <CompanyLogos className="hidden relative z-10 mt-20 lg:block text-n-1" /> */}
       </div>
-          
+
       {/* <BottomLine /> */}
     </Section>
   );
