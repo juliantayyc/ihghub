@@ -1,37 +1,37 @@
-/** @type {import('tailwindcss').Config} */
-import { fontFamily } from "tailwindcss/defaultTheme";
-import plugin from "tailwindcss/plugin";
+// tailwind.config.js
+const { fontFamily } = require('tailwindcss/defaultTheme');
+const plugin = require('tailwindcss/plugin');
 
-export default {
+module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
         color: {
-          1: "#AC6AFF",
-          2: "#FFC876",
-          3: "#FF776F",
-          4: "#7ADB78",
-          5: "#858DFF",
-          6: "#FF98E2",
+          1: "#FFB266", // Lighter orange color
+          2: "#FFE580", // Lighter yellow color
+          3: "#FF9999", // Lighter red color
+          4: "#99FF99", // Lighter green color
+          5: "#99CCFF", // Lighter blue color
+          6: "#FF99CC", // Lighter pink color
         },
         stroke: {
-          1: "#26242C",
+          1: "#333333", // Softer black color for strokes
         },
         n: {
-          1: "#FFFFFF",
-          2: "#CAC6DD",
-          3: "#ADA8C3",
-          4: "#757185",
-          5: "#3F3A52",
-          6: "#252134",
-          7: "#15131D",
-          8: "#0E0C15",
-          9: "#474060",
-          10: "#43435C",
-          11: "#1B1B2E",
-          12: "#2E2A41",
-          13: "#6C7275",
+          1: "#333333", // Set n-1 to softer black for text
+          2: "#666666", // Softer gray for secondary text
+          3: "#999999", // Light gray for secondary text
+          4: "#CCCCCC", // Lighter gray for disabled text
+          5: "#E0E0E0", // Very light gray
+          6: "#F0F0F0", // Even lighter gray
+          7: "#FFFFFF", // Set n-7 to white for background
+          8: "#FFF5E6", // Lighter cream color
+          9: "#D9D9D9", // Even lighter gray
+          10: "#CCCCCC", // Light gray
+          11: "#B3B3B3", // Lighter gray
+          12: "#999999", // Light gray
+          13: "#666666", // Softer gray
         },
       },
       fontFamily: {
@@ -69,7 +69,7 @@ export default {
       backgroundImage: {
         "radial-gradient": "radial-gradient(var(--tw-gradient-stops))",
         "conic-gradient":
-          "conic-gradient(from 225deg, #FFC876, #79FFF7, #9F53FF, #FF98E2, #FFC876)",
+          "conic-gradient(from 225deg, #FFE580, #FFB266, #FF9999, #99FF99, #99CCFF, #FF99CC, #FFE580)",
       },
     },
   },
