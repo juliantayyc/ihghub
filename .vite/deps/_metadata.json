@@ -1,0 +1,61 @@
+{
+  "hash": "4bec1eb4",
+  "configHash": "c594672e",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "7e2fe68a",
+  "optimized": {
+    "react": {
+      "src": "../../client/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "084b920a",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../client/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "51750183",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../client/node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "f0431bc4",
+      "needsInterop": false
+    },
+    "react-datepicker": {
+      "src": "../../client/node_modules/react-datepicker/dist/es/index.js",
+      "file": "react-datepicker.js",
+      "fileHash": "05c83b7c",
+      "needsInterop": false
+    },
+    "scroll-lock": {
+      "src": "../../client/node_modules/scroll-lock/dist/scroll-lock.js",
+      "file": "scroll-lock.js",
+      "fileHash": "e07e88a8",
+      "needsInterop": true
+    },
+    "autoprefixer": {
+      "src": "../../client/node_modules/autoprefixer/lib/autoprefixer.js",
+      "file": "autoprefixer.js",
+      "fileHash": "adcbf1f0",
+      "needsInterop": true
+    },
+    "react-just-parallax": {
+      "src": "../../client/node_modules/react-just-parallax/dist/esm/index.js",
+      "file": "react-just-parallax.js",
+      "fileHash": "d5928e93",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-K6VWGSYP": {
+      "file": "chunk-K6VWGSYP.js"
+    },
+    "chunk-4UKUOMEG": {
+      "file": "chunk-4UKUOMEG.js"
+    },
+    "chunk-LNEMQRCO": {
+      "file": "chunk-LNEMQRCO.js"
+    }
+  }
+}
