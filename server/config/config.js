@@ -25,10 +25,13 @@ module.exports = {
     host: process.env.AZURE_MYSQL_HOST,
     port: process.env.AZURE_MYSQL_PORT,
     dialect: 'mysql',
-    ssl: {
-      ca: fs.readFileSync(
-        path.join(process.env.CA_CERT_PATH, process.env.CA_CERT_NAME)
-      ),
+    dialectOptions: {
+      ssl: {
+        ca: fs.readFileSync(
+          path.join(process.env.CA_CERT_PATH, process.env.CA_CERT_NAME)
+        ),
+        rejectUnauthorized: true, // Ensure server certificate is verified
+      },
     },
   },
 };
