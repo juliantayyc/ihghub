@@ -16,7 +16,7 @@ const Fixtures = () => {
 
   useEffect(() => {
     axios
-      .get(`${APP_SERVER_URL}/fixtures`)
+      .get(`${APP_SERVER_URL}/fixturesData`)
       .then((response) => {
         const sortedFixtures = [...response.data].sort((a, b) => {
           const dateComparison = a.date.localeCompare(b.date);
