@@ -25,7 +25,9 @@ module.exports = {
     port: process.env.AZURE_MYSQL_PORT,
     dialect: 'mysql',
     ssl: {
-      ca: process.env.MYSQL_SSL_CA,
+      ca: fs.readFileSync(
+        path.join(process.env.CA_CERT_PATH, process.env.CA_CERT_NAME)
+      ),
     },
   },
 };
