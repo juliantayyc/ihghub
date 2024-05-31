@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Dropdown from '../components/Dropdown';
-import { fixtures as fixturesData } from '../constants/database';
+import axios from 'axios';
+import { APP_SERVER_URL } from '../constants';
 
 const Fixtures = () => {
   const [fixtures, setFixtures] = useState([]);
@@ -14,12 +15,19 @@ const Fixtures = () => {
   });
 
   useEffect(() => {
-    const sortedFixtures = [...fixturesData].sort((a, b) => {
-      const dateComparison = a.date.localeCompare(b.date);
-      if (dateComparison !== 0) return dateComparison;
-      return a.startTime.localeCompare(b.startTime);
-    });
-    setFixtures(sortedFixtures);
+    axios
+      .get(`${APP_SERVER_URL}/fixtures`)
+      .then((response) => {
+        const sortedFixtures = [...response.data].sort((a, b) => {
+          const dateComparison = a.date.localeCompare(b.date);
+          if (dateComparison !== 0) return dateComparison;
+          return a.startTime.localeCompare(b.startTime);
+        });
+        setFixtures(sortedFixtures);
+      })
+      .catch((error) => {
+        console.error('There was an error!', error);
+      });
   }, []);
 
   const handleFilterChange = (e) => {

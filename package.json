@@ -1,0 +1,13 @@
+{
+  "name": "ihghub",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix ./client\" \"npm run dev --prefix ./server\""
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
