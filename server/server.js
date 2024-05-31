@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const path = require('path');
 const express = require('express');
 const app = express();
 const cors = require('cors');
@@ -10,9 +10,17 @@ app.use(cors());
 // Create Tables if not exist
 const db = require('./models');
 
-// Routers
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Backend Routes
 const fixturesRouter = require('./routes/Fixtures');
-app.use('/fixtures', fixturesRouter);
+app.use('/fixturesData', fixturesRouter);
+
+// Serve Client Routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
