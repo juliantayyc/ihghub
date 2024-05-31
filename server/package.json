@@ -13,6 +13,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "ihghub": "file:..",
     "mysql2": "^3.9.9",
     "nodemon": "^3.1.2",
     "sequelize": "^6.37.3",

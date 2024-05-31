@@ -27,4 +27,48 @@ router.post('/', async (req, res) => {
     });
 });
 
+router.put('/:id', async (req, res) => {
+  const id = req.params.id;
+  const {
+    sport,
+    sex,
+    team1,
+    team2,
+    score1,
+    score2,
+    venue,
+    type,
+    date,
+    startTime,
+    endTime,
+  } = req.body;
+
+  try {
+    const fixture = await Fixtures.findOne({ where: { id } });
+
+    if (fixture) {
+      fixture.sport = sport;
+      fixture.sex = sex;
+      fixture.team1 = team1;
+      fixture.team2 = team2;
+      fixture.score1 = score1;
+      fixture.score2 = score2;
+      fixture.venue = venue;
+      fixture.type = type;
+      fixture.date = date;
+      fixture.startTime = startTime;
+      fixture.endTime = endTime;
+
+      await fixture.save();
+      res.json({ message: 'Fixture updated successfully', fixture });
+    } else {
+      res.status(404).json({ message: 'Fixture not found' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while updating the fixture' });
+  }
+});
+
 module.exports = router;
