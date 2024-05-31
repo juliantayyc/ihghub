@@ -24,10 +24,8 @@ module.exports = {
     host: process.env.AZURE_MYSQL_HOST,
     port: process.env.AZURE_MYSQL_PORT,
     dialect: 'mysql',
-    // dialectOptions: {
-    //   ssl: {
-    //     ca: fs.readFileSync(__dirname + '/mysql-ca-main.crt'),
-    //   },
-    // },
+    ssl: {
+      ca: process.env.MYSQL_SSL_CA,
+    },
   },
 };
