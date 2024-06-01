@@ -12,6 +12,15 @@ const calculateTotalScores = async () => {
     'KEVII Hall',
   ];
 
+  const hallMapping = {
+    TH: 'Temasek Hall',
+    KR: 'Kent Ridge Hall',
+    EH: 'Eusoff Hall',
+    SH: 'Sheares Hall',
+    RH: 'Raffles Hall',
+    KE: 'KEVII Hall',
+  };
+
   const totals = {};
 
   for (const hall of halls) {
@@ -21,8 +30,9 @@ const calculateTotalScores = async () => {
   const entries = await Leaderboard.findAll();
 
   entries.forEach((entry) => {
-    if (totals[entry.hall]) {
-      totals[entry.hall][entry.sex] += entry.score;
+    const fullHallName = hallMapping[entry.hall];
+    if (fullHallName && totals[fullHallName]) {
+      totals[fullHallName][entry.sex] += entry.score;
     }
   });
 
