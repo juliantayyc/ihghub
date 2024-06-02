@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
 module.exports = {
   development: {
@@ -28,7 +29,10 @@ module.exports = {
     dialectOptions: {
       ssl: {
         ca: fs.readFileSync(
-          path.join(process.env.CA_CERT_PATH, process.env.CA_CERT_NAME)
+          path.join(
+            `${process.env.CA_CERT_PATH}`,
+            `${process.env.CA_CERT_NAME}`
+          )
         ),
         rejectUnauthorized: true, // Ensure server certificate is verified
       },
