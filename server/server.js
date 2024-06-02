@@ -18,9 +18,12 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 const fixturesRouter = require('./routes/Fixtures');
 app.use('/fixturesData', fixturesRouter);
 
+const leaderboardRouter = require('./routes/Leaderboard');
+app.use('/leaderboardData', leaderboardRouter);
+
 // Serve Client Routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
 db.sequelize.sync().then(() => {
