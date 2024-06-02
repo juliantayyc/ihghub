@@ -51,24 +51,24 @@ export const navigation = [
   },
   {
     id: '2',
-    title: 'How to use',
-    url: '#how-to-use',
+    title: 'Venues',
+    url: '/venues',
   },
   {
     id: '3',
-    title: 'Roadmap',
-    url: '#roadmap',
+    title: 'Live',
+    url: '/live',
   },
   {
     id: '4',
     title: 'New account',
-    url: '#signup',
+    url: '/signup',
     onlyMobile: true,
   },
   {
     id: '5',
     title: 'Sign in',
-    url: '#login',
+    url: '/login',
     onlyMobile: true,
   },
 ];
@@ -297,34 +297,34 @@ export const benefits = [
 ];
 
 export const socials = [
+  // {
+  //   id: '0',
+  //   title: 'Discord',
+  //   iconUrl: discordBlack,
+  //   url: '#',
+  // },
+  // {
+  //   id: '1',
+  //   title: 'Twitter',
+  //   iconUrl: twitter,
+  //   url: '#',
+  // },
   {
     id: '0',
-    title: 'Discord',
-    iconUrl: discordBlack,
-    url: '#',
-  },
-  {
-    id: '1',
-    title: 'Twitter',
-    iconUrl: twitter,
-    url: '#',
-  },
-  {
-    id: '2',
     title: 'Instagram',
     iconUrl: instagram,
-    url: '#',
+    url: 'https://www.instagram.com/ihgofficial?igsh=NTFwZGl4YzU5YXFn',
   },
-  {
-    id: '3',
-    title: 'Telegram',
-    iconUrl: telegram,
-    url: '#',
-  },
-  {
-    id: '4',
-    title: 'Facebook',
-    iconUrl: facebook,
-    url: '#',
-  },
+  // {
+  //   id: '3',
+  //   title: 'Telegram',
+  //   iconUrl: telegram,
+  //   url: '#',
+  // },
+  // {
+  //   id: '4',
+  //   title: 'Facebook',
+  //   iconUrl: facebook,
+  //   url: '#',
+  // },
 ];
