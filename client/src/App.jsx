@@ -4,6 +4,7 @@ import Fixtures from './pages/Fixtures';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import NotFound from './pages/NotFound';
+import NotYetAdded from './pages/NotYetAdded';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -30,6 +31,24 @@ const App = () => {
           <Route
             path="*"
             element={<NotFound />}
+          />
+
+          {/* 501 page */}
+          <Route
+            path="/venues"
+            element={<NotYetAdded />}
+          />
+          <Route
+            path="/live"
+            element={<NotYetAdded />}
+          />
+          <Route
+            path="/login"
+            element={<NotYetAdded />}
+          />
+          <Route
+            path="/signup"
+            element={<NotYetAdded />}
           />
         </Routes>
         <Footer />
