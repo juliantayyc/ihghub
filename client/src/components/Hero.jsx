@@ -42,7 +42,7 @@ const Hero = () => {
             Your one stop solution to all things IHG.
           </p>
           <Button
-            href="/pricing"
+            href="/signup"
             black
           >
             Get started
