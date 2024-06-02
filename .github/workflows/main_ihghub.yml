@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_APP_SERVER_URL: https://ihghub.azurewebsites.net
 
     steps:
       - uses: actions/checkout@v4
