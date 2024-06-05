@@ -21,6 +21,9 @@ app.use('/fixturesData', fixturesRouter);
 const leaderboardRouter = require('./routes/Leaderboard');
 app.use('/leaderboardData', leaderboardRouter);
 
+const usersRouter = require('./routes/Users');
+app.use('/auth', usersRouter);
+
 // Serve Client Routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
