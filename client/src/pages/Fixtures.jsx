@@ -137,6 +137,7 @@ const Fixtures = () => {
                 {fixture.sport} {fixture.sex}
               </span>
               <span className="block text-n-3">{fixture.type}</span>
+              <span className="block text-n-3">{fixture.venue}</span>
             </div>
           </div>
         ))}
