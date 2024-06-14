@@ -41,7 +41,7 @@ const Leaderboard = () => {
       className="container mx-auto px-4"
       style={{ scrollMarginTop: '120px' }}
     >
-      <div className="relative z-1 flex flex-col items-center mb-4 sm:mb-8 mt-4 sm:mt-8 p-4 sm:p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 bg-color-3 bg-opacity-10 w-full mx-auto">
+      <div className="relative z-1 flex flex-col items-center mb-4 sm:mb-8 mt-4 sm:mt-8 p-4 sm:p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 bg-color-3 bg-opacity-10 w-full mx-auto max-w-5xl">
         <h1 className="h1">Leaderboard</h1>
         <div className="mt-8">
           <Button
