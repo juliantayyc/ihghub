@@ -38,33 +38,30 @@ const Leaderboard = () => {
   return (
     <div
       id="leaderboard"
-      className="container"
+      className="container relative mx-auto"
       style={{ scrollMarginTop: '120px' }}
     >
-      <div className="relative z-1 flex flex-col items-center mb-10 mt-10 p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 bg-color-3 bg-opacity-10">
+      <div className="relative z-1 flex flex-col items-center mb-4 sm:mb-8 mt-4 sm:mt-8 p-4 sm:p-8 border border-n-1/10 rounded-3xl overflow-hidden lg:p-20 bg-color-3 bg-opacity-10 w-full mx-auto max-w-5xl">
         <h1 className="h1">Leaderboard</h1>
-        <div className="mt-8">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Button
-            className="items-center px-10 text-lg w-60 h-1/2"
+            className="px-8 py-2 text-sm sm:text-lg w-full sm:w-auto"
             onClick={handleClick}
             dataId="All"
-            px="px-20"
           >
             Overall
           </Button>
           <Button
-            className="items-center px-10 text-lg w-60 h-1/2"
+            className="px-8 py-2 text-sm sm:text-lg w-full sm:w-auto"
             onClick={handleClick}
             dataId="M"
-            px="px-20"
           >
             Male
           </Button>
           <Button
-            className="items-center px-10 text-lg w-60 h-1/2"
+            className="px-8 py-2 text-sm sm:text-lg w-full sm:w-auto"
             onClick={handleClick}
             dataId="F"
-            px="px-20"
           >
             Female
           </Button>
