@@ -1,6 +1,8 @@
 import ButtonGradient from './assets/svg/ButtonGradient';
 import Home from './pages/Home';
 import Fixtures from './pages/Fixtures';
+import Venues from './pages/Venues';
+import VenueDetails from './components/VenueDetails';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import NotFound from './pages/NotFound';
@@ -29,6 +31,10 @@ const App = () => {
             element={<Fixtures />}
           />
           <Route
+            path="/venues"
+            element={<Venues />}
+          />
+          <Route
             path="/login"
             element={<Login />}
           />
@@ -36,29 +42,19 @@ const App = () => {
             path="/signup"
             element={<Signup />}
           />
-
-          {/* 404 page */}
           <Route
-            path="*"
-            element={<NotFound />}
+            path="/venues/:id"
+            element={<VenueDetails />}
           />
-
           {/* 501 page */}
-          <Route
-            path="/venues"
-            element={<NotYetAdded />}
-          />
           <Route
             path="/live"
             element={<NotYetAdded />}
           />
+          {/* 404 page */}
           <Route
-            path="/login"
-            element={<NotYetAdded />}
-          />
-          <Route
-            path="/signup"
-            element={<NotYetAdded />}
+            path="*"
+            element={<NotFound />}
           />
         </Routes>
         <Footer />
