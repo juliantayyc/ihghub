@@ -5,6 +5,8 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import NotFound from './pages/NotFound';
 import NotYetAdded from './pages/NotYetAdded';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -25,6 +27,14 @@ const App = () => {
           <Route
             path="/fixtures"
             element={<Fixtures />}
+          />
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+          <Route
+            path="/signup"
+            element={<Signup />}
           />
 
           {/* 404 page */}

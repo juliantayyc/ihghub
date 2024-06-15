@@ -93,7 +93,7 @@ const Header = () => {
           onClick={() => handleNavigate('/login')}
           className="hidden lg:flex"
         >
-          Sign in
+          Log in
         </Button>
 
         <Button

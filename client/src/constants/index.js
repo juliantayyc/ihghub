@@ -67,7 +67,7 @@ export const navigation = [
   },
   {
     id: '5',
-    title: 'Sign in',
+    title: 'Log in',
     url: '/login',
     onlyMobile: true,
   },
