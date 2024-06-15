@@ -8,12 +8,17 @@ function Signup() {
 
   const initialValues = {
     username: '',
+    email: '',
     password: '',
     confirmPassword: '',
   };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().min(3).max(15).required('Username is required'),
+    email: Yup.string()
+      .email('Invalid email format')
+      .matches(/@u\.nus\.edu$/, 'Email must end with @u.nus.edu')
+      .required('Email is required'),
     password: Yup.string().min(4).max(20).required('Password is required'),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -69,12 +74,33 @@ function Signup() {
                 autoComplete="off"
                 id="username"
                 name="username"
-                placeholder="(Ex. John123...)"
+                placeholder="(E.g. John123...)"
                 className="w-full px-4 py-2 bg-orange-200 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <ErrorMessage
                 name="username"
                 component="div"
+                className="text-red-500 text-sm mt-1"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label
+                className="block text-gray-600 mb-1"
+                htmlFor="email"
+              >
+                NUS Email:
+              </label>
+              <Field
+                autoComplete="off"
+                id="email"
+                name="email"
+                placeholder="(E.g. E1234567@u.nus.edu)"
+                className="w-full px-4 py-2 bg-orange-200 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <ErrorMessage
+                name="email"
+                component="email"
                 className="text-red-500 text-sm mt-1"
               />
             </div>

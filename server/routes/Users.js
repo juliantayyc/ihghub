@@ -4,7 +4,7 @@ const { Users } = require('../models');
 const bcrypt = require('bcrypt');
 
 router.post('/', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
   // check if user exists
   const user = await Users.findOne({ where: { username: username } });
@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
     Users.create({
       username: username,
       password: hash,
+      email: email,
     })
       .then(() => {
         res.json('SUCCESS');
