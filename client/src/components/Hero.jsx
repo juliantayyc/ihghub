@@ -105,10 +105,12 @@ const Hero = () => {
                           {game.startTime} - {game.endTime}
                         </div>
                       </div>
-                      <div className="mt-2 md:mt-0 md:mr-4">
-                        <span className="font-bold text-lg">
-                          {game.team1} vs {game.team2}
-                        </span>
+                      <div className="mt-2 md:mt-0 md:mr-4 flex flex-row items-center space-x-2">
+                        <span className="font-bold text-lg">{game.team1}</span>
+                        <span className="text-n-2">{game.score1}</span>
+                        <span className="font-bold text-lg">vs</span>
+                        <span className="text-n-2">{game.score2}</span>
+                        <span className="font-bold text-lg">{game.team2}</span>
                       </div>
                     </div>
                   ))
