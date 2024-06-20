@@ -1,0 +1,135 @@
+[
+  {
+    "id": 1,
+    "name": "Field 1",
+    "location": "20 Lower Kent Ridge Road",
+    "latitude": 1.2988153508477294,
+    "longitude": 103.77828397998442
+  },
+  {
+    "id": 2,
+    "name": "Field 2 and 3",
+    "location": "20 Lower Kent Ridge Road",
+    "latitude": 1.2979832928718715,
+    "longitude": 103.77949203625026
+  },
+  {
+    "id": 3,
+    "name": "Outdoor Tennis Courts",
+    "location": "20 Lower Kent Ridge Road",
+    "latitude": 1.2987170139943884,
+    "longitude": 103.7772374511025
+  },
+  {
+    "id": 4,
+    "name": "SRC Courts",
+    "location": "20 Lower Kent Ridge Road",
+    "latitude": 1.2998810425838698,
+    "longitude": 103.77740144498287
+  },
+  {
+    "id": 5,
+    "name": "MPSH 2",
+    "location": "8 Sports Drive 1",
+    "latitude": 1.3007886028556361,
+    "longitude": 103.77618153708885
+  },
+  {
+    "id": 6,
+    "name": "MPSH 5",
+    "location": "8 Sports Drive 1",
+    "latitude": 1.3004195406309502,
+    "longitude": 103.77642658837033
+  },
+  {
+    "id": 7,
+    "name": "MPSH 6",
+    "location": "8 Sports Drive 1",
+    "latitude": 1.3003550725616322,
+    "longitude": 103.77570587727504
+  },
+  {
+    "id": 8,
+    "name": "USC Sports Hall",
+    "location": "2 Sports Drive 1",
+    "latitude": 1.2995711934918088,
+    "longitude": 103.77560486215542
+  },
+  {
+    "id": 9,
+    "name": "USC Swimming Pool",
+    "location": "21 Lower Kent Ridge Road",
+    "latitude": 1.2997265389427324,
+    "longitude": 103.77595017753684
+  },
+  {
+    "id": 10,
+    "name": "Squash Courts",
+    "location": "2 Sports Drive 1",
+    "latitude": 1.2994986098211916,
+    "longitude": 103.77531717619144
+  },
+  {
+    "id": 11,
+    "name": "UTSH 1 and 2",
+    "location": "2 College Ave West",
+    "latitude": 1.305012357508027,
+    "longitude": 103.77213295553419
+  },
+  {
+    "id": 12,
+    "name": "Yale NUS Court",
+    "location": "16 College Ave West",
+    "latitude": 1.307512338886388,
+    "longitude": 103.77252160818229
+  },
+  {
+    "id": 13,
+    "name": "Stadium Track",
+    "location": "20 Lower Kent Ridge Road",
+    "latitude": 1.2987817216551578,
+    "longitude": 103.77787033844304
+  },
+  {
+    "id": 14,
+    "name": "Temasek Hall",
+    "location": "12 Kent Ridge Drive",
+    "latitude": 1.292836229503242,
+    "longitude": 103.77142600399826
+  },
+  {
+    "id": 15,
+    "name": "Eusoff Hall",
+    "location": "10 Kent Ridge Drive",
+    "latitude": 1.2937452667151659,
+    "longitude": 103.7704604087589
+  },
+  {
+    "id": 16,
+    "name": "Kent Ridge Hall",
+    "location": "10 Heng Mui Keng Ter",
+    "latitude": 1.2918600848067396,
+    "longitude": 103.77481683576788
+  },
+  {
+    "id": 17,
+    "name": "Sheares Hall",
+    "location": "20 Heng Mui Keng Ter",
+    "latitude": 1.2915252511993394,
+    "longitude": 103.77567167591482
+  },
+  {
+    "id": 18,
+    "name": "Raffles Hall",
+    "location": "19 Kent Ridge Cres",
+    "latitude": 1.3001127686381546,
+    "longitude": 103.77403893247156
+  },
+  {
+    "id": 19,
+    "name": "King Edward VII Hall",
+    "location": "1A Kent Ridge Road",
+    "latitude": 1.2925146454434602,
+    "longitude": 103.78109839646461
+  }
+]
