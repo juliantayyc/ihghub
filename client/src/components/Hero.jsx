@@ -1,14 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { curve } from '../assets';
 import Button from './Button';
 import Section from './Section';
 import { BackgroundCircles, Gradient } from './design/Hero';
 import axios from 'axios';
 import { APP_SERVER_URL } from '../constants';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [todaysGames, setTodaysGames] = useState([]);
   const parallaxRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTodaysGames();
@@ -39,6 +41,10 @@ const Hero = () => {
   const convertTimeToSeconds = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
+  };
+
+  const handleCardClick = (game) => {
+    navigate(`/game/${game.id}`, { state: { game } });
   };
 
   return (
@@ -89,10 +95,18 @@ const Hero = () => {
                   todaysGames.map((game, index) => (
                     <div
                       key={index}
-                      className="p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative"
+                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative ${
+                        isGameLive(game.startTime, game.endTime)
+                          ? 'cursor-pointer'
+                          : 'cursor-default'
+                      }`}
+                      onClick={() =>
+                        isGameLive(game.startTime, game.endTime) &&
+                        handleCardClick(game)
+                      }
                     >
                       {isGameLive(game.startTime, game.endTime) && (
-                        <div className="absolute top-2 right-2 w-3 h-3 bg-red-700 rounded-full animate-ping" />
+                        <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-ping" />
                       )}
                       <div className="flex flex-col md:flex-row md:justify-between items-center md:space-x-4">
                         <div className="text-n-1 md:ml-4 md:mr-4 px-2">
