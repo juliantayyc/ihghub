@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound';
 import NotYetAdded from './pages/NotYetAdded';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Live from './pages/Live';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -46,11 +47,12 @@ const App = () => {
             path="/venues/:id"
             element={<VenueDetails />}
           />
-          {/* 501 page */}
           <Route
             path="/live"
-            element={<NotYetAdded />}
+            element={<Live />}
           />
+          {/* 501 page */}
+
           {/* 404 page */}
           <Route
             path="*"

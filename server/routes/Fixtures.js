@@ -1,6 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const { Fixtures } = require('../models');
+const { Op } = require('sequelize');
+
+router.get('/live', async (req, res) => {
+  const now = new Date();
+  const adjustedTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+  const adjustedStartTime = new Date(
+    adjustedTime.getTime() + 0.25 * 60 * 60 * 1000
+  );
+  await Fixtures.findAll({
+    where: {
+      startTime: {
+        [Op.lte]: adjustedStartTime,
+      },
+      endTime: {
+        [Op.gte]: adjustedTime,
+      },
+    },
+  })
+    .then((fixtures) => {
+      res.json(fixtures);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
 
 router.get('/', async (req, res) => {
   await Fixtures.findAll()
