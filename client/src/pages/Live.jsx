@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const styles = {
   container: {
@@ -22,6 +23,8 @@ const styles = {
     margin: '10px',
     width: '300px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#FFEDD5',
+    cursor: 'pointer', // Make the card clickable
   },
   cardHeading: {
     fontSize: '1.5em',
@@ -35,6 +38,7 @@ const styles = {
 
 const Live = () => {
   const [liveGames, setLiveGames] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLiveGames = async () => {
@@ -51,6 +55,10 @@ const Live = () => {
     fetchLiveGames();
   }, []);
 
+  const handleCardClick = (game) => {
+    navigate(`/game/${game.id}`, { state: { game } });
+  };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>Live Games</h1>
@@ -60,6 +68,7 @@ const Live = () => {
             <div
               key={game.id}
               style={styles.card}
+              onClick={() => handleCardClick(game)}
             >
               <h2 style={styles.cardHeading}>
                 {game.team1} vs {game.team2}

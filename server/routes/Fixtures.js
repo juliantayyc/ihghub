@@ -5,12 +5,16 @@ const { Op } = require('sequelize');
 
 router.get('/live', async (req, res) => {
   const now = new Date();
-  const adjustedTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+  const adjustedTime = new Date(now.getTime() + 8 * 60 * 60 * 1000); // Adjust timezone if necessary
   const adjustedStartTime = new Date(
     adjustedTime.getTime() + 0.25 * 60 * 60 * 1000
-  );
+  ); // Adjust start time if necessary
+
+  const currentDate = adjustedTime.toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+
   await Fixtures.findAll({
     where: {
+      date: currentDate,
       startTime: {
         [Op.lte]: adjustedStartTime,
       },
