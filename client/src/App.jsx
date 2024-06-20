@@ -10,6 +10,7 @@ import NotYetAdded from './pages/NotYetAdded';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Live from './pages/Live';
+import GameDetail from './components/GameDetail';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -50,6 +51,10 @@ const App = () => {
           <Route
             path="/live"
             element={<Live />}
+          />
+          <Route
+            path="/game/:id"
+            element={<GameDetail />}
           />
           {/* 501 page */}
 
