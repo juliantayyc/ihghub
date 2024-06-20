@@ -21,10 +21,24 @@ const Hero = () => {
       const filteredGames = response.data.filter(
         (fixture) => fixture.date === today
       );
+
+      // Sort games based on startTime (assuming startTime and endTime are in HH:mm:ss format)
+      filteredGames.sort((a, b) => {
+        const startTimeA = convertTimeToSeconds(a.startTime);
+        const startTimeB = convertTimeToSeconds(b.startTime);
+        return startTimeA - startTimeB;
+      });
+
       setTodaysGames(filteredGames);
     } catch (error) {
       console.error('There was an error fetching the fixtures data!', error);
     }
+  };
+
+  // Function to convert HH:mm:ss to total seconds
+  const convertTimeToSeconds = (timeString) => {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
   };
 
   return (
@@ -75,8 +89,11 @@ const Hero = () => {
                   todaysGames.map((game, index) => (
                     <div
                       key={index}
-                      className="p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center"
+                      className="p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative"
                     >
+                      {isGameLive(game.startTime, game.endTime) && (
+                        <div className="absolute top-2 right-2 w-3 h-3 bg-red-700 rounded-full animate-ping" />
+                      )}
                       <div className="flex flex-col md:flex-row md:justify-between items-center md:space-x-4">
                         <div className="text-n-1 md:ml-4 md:mr-4 px-2">
                           {game.sport} - {game.sex}
@@ -109,6 +126,14 @@ const Hero = () => {
       </div>
     </Section>
   );
+};
+
+// Function to check if game is currently live based on start and end times
+const isGameLive = (startTime, endTime) => {
+  const now = new Date();
+  const start = new Date(`${now.toISOString().split('T')[0]} ${startTime}`);
+  const end = new Date(`${now.toISOString().split('T')[0]} ${endTime}`);
+  return start <= now && now <= end;
 };
 
 export default Hero;
