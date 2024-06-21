@@ -23,7 +23,7 @@ const styles = {
     margin: '10px',
     width: '300px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#FFEDD5',
+    backgroundColor: '#FFE4E6',
     cursor: 'pointer', // Make the card clickable
   },
   cardHeading: {
@@ -73,6 +73,9 @@ const Live = () => {
               <h2 style={styles.cardHeading}>
                 {game.team1} vs {game.team2}
               </h2>
+              <p style={styles.cardText}>
+                {game.sport} - {game.sex}
+              </p>
               <p style={styles.cardText}>
                 Score: {game.score1} - {game.score2}
               </p>
