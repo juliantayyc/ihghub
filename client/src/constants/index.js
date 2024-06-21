@@ -37,6 +37,7 @@ import {
 } from '../assets';
 
 export const APP_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+export const YOUTUBE_API_KEY = import.meta.env.VITE_APP_YOUTUBE_API_KEY;
 
 export const navigation = [
   {
