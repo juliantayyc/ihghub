@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Dropdown from '../components/Dropdown';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { APP_SERVER_URL } from '../constants';
 
 const Fixtures = () => {
@@ -13,6 +14,7 @@ const Fixtures = () => {
     sport: '',
     sex: '',
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -44,6 +46,10 @@ const Fixtures = () => {
 
   const handleClearDate = () => {
     setFilter((prevFilter) => ({ ...prevFilter, date: '' }));
+  };
+
+  const handleCardClick = (fixture) => {
+    navigate(`/summary/${fixture.id}`, { state: { ...fixture } });
   };
 
   const filteredFixtures = fixtures.filter((fixture) => {
@@ -112,7 +118,8 @@ const Fixtures = () => {
         {filteredFixtures.map((fixture, index) => (
           <div
             key={index}
-            className="relative p-6 bg-color-3 bg-opacity-10 shadow-md rounded-xl border border-n-1/10 hover:shadow-lg transition-shadow duration-200"
+            className="relative p-6 bg-color-3 bg-opacity-10 shadow-md rounded-xl border border-n-1/10 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+            onClick={() => handleCardClick(fixture)}
           >
             <div className="mb-4 text-center">
               <span className="h6 block">
