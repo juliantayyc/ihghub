@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { APP_SERVER_URL } from '../constants';
 
 const styles = {
   container: {
@@ -43,9 +44,7 @@ const Live = () => {
   useEffect(() => {
     const fetchLiveGames = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:3001/fixturesData/live'
-        );
+        const response = await axios.get(`${APP_SERVER_URL}/fixturesData/live`);
         setLiveGames(response.data);
       } catch (error) {
         console.error('Error fetching live games:', error);

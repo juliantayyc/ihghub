@@ -11,6 +11,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Live from './pages/Live';
 import GameDetail from './components/GameDetail';
+import GameSummary from './components/GameSummary';
+import AdminPanel from './components/AdminPanel';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -55,6 +57,14 @@ const App = () => {
           <Route
             path="/game/:id"
             element={<GameDetail />}
+          />
+          <Route
+            path="/summary/:id"
+            element={<GameSummary />}
+          />
+          <Route
+            path="/admin"
+            element={<AdminPanel />}
           />
           {/* 501 page */}
 

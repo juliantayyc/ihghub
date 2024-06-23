@@ -29,9 +29,20 @@ const styles = {
     fontSize: '1em',
     margin: '5px 0',
   },
+  iframeContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '20px',
+    marginTop: '20px',
+  },
   iframe: {
     width: '100%',
     height: '390px',
+    border: 'none',
+  },
+  iframeChat: {
+    width: '100%',
+    height: '600px',
     border: 'none',
   },
 };
@@ -48,13 +59,12 @@ const sportChannelMapping = {
   Football: 'UCiJTKr-wja_JVM2dVTYCELA',
   Basketball: 'YOUR_BASKETBALL_CHANNEL_ID',
   Floorball: 'YOUR_FLOORBALL_CHANNEL_ID',
-  Squash: 'YOUR_SQUASH_CHANNEL_ID',
+  Squash: 'UCQfwfsi5VrQ8yKZ-UWmAEFg',
   Tennis: 'UCcyq283he07B7_KUX07mmtA',
   'Ultimate Frisbee': 'YOUR_ULTIMATEFRISBEE_CHANNEL_ID',
   'Sepak Takraw': 'UCeY0bbntWzzVIaj2z3QigXg',
   Volleyball: 'YOUR_VOLLEYBALL_CHANNEL_ID',
   Badminton: 'UCAOtE1V7Ots4DjM8JLlrYgg',
-  // Add more mappings as needed
 };
 
 const fetchLiveStream = async (sport) => {
@@ -76,12 +86,13 @@ const GameDetail = () => {
   const { game } = state;
   const [videoId, setVideoId] = useState(null);
   const [loading, setLoading] = useState(true);
+  //   const navigate = useNavigate();
 
   useEffect(() => {
     const getLiveStream = async () => {
       const id = await fetchLiveStream(game.sport);
       setVideoId(id);
-      setLoading(false); // Set loading to false after fetching the video ID
+      setLoading(false);
     };
 
     getLiveStream();
@@ -110,12 +121,20 @@ const GameDetail = () => {
       {loading ? (
         <p style={styles.loading}>Loading live stream...</p>
       ) : videoId ? (
-        <iframe
-          style={styles.iframe}
-          src={`https://www.youtube.com/embed/${videoId}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
+        <div style={styles.iframeContainer}>
+          <iframe
+            style={styles.iframe}
+            src={`https://www.youtube.com/embed/${videoId}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          <iframe
+            style={styles.iframeChat}
+            src={`https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${window.location.hostname}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       ) : (
         <p>No live stream available.</p>
       )}

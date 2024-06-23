@@ -46,6 +46,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false,
       },
+      videoId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      summary: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       indexes: [

@@ -19,7 +19,9 @@ const Hero = () => {
   const fetchTodaysGames = async () => {
     try {
       const response = await axios.get(`${APP_SERVER_URL}/fixturesData`);
-      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0]; // Get today's date in YYYY-MM-DD format
       const filteredGames = response.data.filter(
         (fixture) => fixture.date === today
       );
@@ -44,7 +46,11 @@ const Hero = () => {
   };
 
   const handleCardClick = (game) => {
-    navigate(`/game/${game.id}`, { state: { game } });
+    if (isGameLive(game.startTime, game.endTime)) {
+      navigate(`/game/${game.id}`, { state: { game } });
+    } else {
+      navigate(`/summary/${game.id}`, { state: { ...game } });
+    }
   };
 
   return (
@@ -95,15 +101,8 @@ const Hero = () => {
                   todaysGames.map((game, index) => (
                     <div
                       key={index}
-                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative ${
-                        isGameLive(game.startTime, game.endTime)
-                          ? 'cursor-pointer'
-                          : 'cursor-default'
-                      }`}
-                      onClick={() =>
-                        isGameLive(game.startTime, game.endTime) &&
-                        handleCardClick(game)
-                      }
+                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative ${'cursor-pointer'}`}
+                      onClick={() => handleCardClick(game)}
                     >
                       {isGameLive(game.startTime, game.endTime) && (
                         <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-ping" />
@@ -147,8 +146,13 @@ const Hero = () => {
 // Function to check if game is currently live based on start and end times
 const isGameLive = (startTime, endTime) => {
   const now = new Date();
-  const start = new Date(`${now.toISOString().split('T')[0]} ${startTime}`);
-  const end = new Date(`${now.toISOString().split('T')[0]} ${endTime}`);
+  const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+  const start = new Date(`${today} ${startTime}`);
+  const end = new Date(`${today} ${endTime}`);
+  console.log(now);
+  console.log(start);
   return start <= now && now <= end;
 };
 
