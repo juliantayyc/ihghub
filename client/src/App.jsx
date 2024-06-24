@@ -12,7 +12,9 @@ import Signup from './pages/Signup';
 import Live from './pages/Live';
 import GameDetail from './components/GameDetail';
 import GameSummary from './components/GameSummary';
-import AdminPanel from './components/AdminPanel';
+import AdminPanel from './pages/AdminPanel';
+import UploadVideo from './components/UploadVideo';
+import UpdateScore from './components/UpdateScore';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -66,7 +68,19 @@ const App = () => {
             path="/admin"
             element={<AdminPanel />}
           />
+          <Route
+            path="/uploadvideo"
+            element={<UploadVideo />}
+          />
+          <Route
+            path="/updatescore"
+            element={<UpdateScore />}
+          />
           {/* 501 page */}
+          <Route
+            path="/registration"
+            element={<NotYetAdded />}
+          />
 
           {/* 404 page */}
           <Route

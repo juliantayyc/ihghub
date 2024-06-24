@@ -184,4 +184,31 @@ router.put('/:id/video', async (req, res) => {
   }
 });
 
+router.put('/:id/score', async (req, res) => {
+  const id = req.params.id;
+  const { score1, score2 } = req.body;
+
+  try {
+    const fixture = await Fixtures.findOne({ where: { id } });
+
+    if (fixture) {
+      fixture.score1 = score1;
+      fixture.score2 = score2;
+
+      await fixture.save();
+      res.json({
+        message: 'Scores updated successfully',
+        fixture,
+      });
+    } else {
+      res.status(404).json({ message: 'Fixture not found' });
+    }
+  } catch (error) {
+    console.error('Error updating scores:', error);
+    res.status(500).json({
+      error: 'An error occurred while updating the scores',
+    });
+  }
+});
+
 module.exports = router;

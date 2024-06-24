@@ -8,12 +8,14 @@ const styles = {
   container: {
     padding: '20px',
     textAlign: 'center',
+    fontSize: '20px',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '10px',
+    marginTop: '20px',
   },
   input: {
     padding: '10px',
@@ -63,15 +65,15 @@ const sexOptions = ['M', 'F', 'Mixed'];
 
 const typeOptions = ['Carnival', 'Prelims', 'Semis', 'Finals'];
 
-const AdminPanel = () => {
+const UpdateScore = () => {
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedTeam1, setSelectedTeam1] = useState('');
   const [selectedTeam2, setSelectedTeam2] = useState('');
   const [selectedSex, setSelectedSex] = useState('');
   const [type, setType] = useState('');
   const [date, setDate] = useState('');
-  const [videoId, setVideoId] = useState('');
-  const [summary, setSummary] = useState('');
+  const [score1, setScore1] = useState('');
+  const [score2, setScore2] = useState('');
   const [message, setMessage] = useState('');
   const [filteredFixtures, setFilteredFixtures] = useState([]);
 
@@ -96,17 +98,17 @@ const AdminPanel = () => {
       const game = response.data;
 
       if (game) {
-        await axios.put(`${APP_SERVER_URL}/fixturesData/${game.id}/video`, {
-          videoId,
-          summary,
+        await axios.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
+          score1,
+          score2,
         });
-        setMessage('Video ID and summary updated successfully!');
+        setMessage('Scores updated successfully!');
       } else {
         setMessage('No game found with the specified details');
       }
     } catch (error) {
-      console.error('Error updating video ID and summary:', error);
-      setMessage('Error updating video ID and summary');
+      console.error('Error updating scores:', error);
+      setMessage('Error updating scores');
     }
   };
 
@@ -123,14 +125,14 @@ const AdminPanel = () => {
       case 'sport':
         setSelectedSport(value);
         break;
+      case 'sex':
+        setSelectedSex(value);
+        break;
       case 'team1':
         setSelectedTeam1(value);
         break;
       case 'team2':
         setSelectedTeam2(value);
-        break;
-      case 'sex':
-        setSelectedSex(value);
         break;
       case 'type':
         setType(value);
@@ -147,7 +149,7 @@ const AdminPanel = () => {
 
   return (
     <div style={styles.container}>
-      <h1>Admin Panel</h1>
+      <h1 style={{ marginTop: '20px' }}>Update Scores</h1>{' '}
       <form
         style={styles.form}
         onSubmit={handleSubmit}
@@ -165,6 +167,22 @@ const AdminPanel = () => {
               value={sport}
             >
               {sport}
+            </option>
+          ))}
+        </select>
+        <select
+          style={styles.input}
+          value={selectedSex}
+          name="sex"
+          onChange={handleFilterChange}
+        >
+          <option value="">Select Sex</option>
+          {sexOptions.map((sex, index) => (
+            <option
+              key={index}
+              value={sex}
+            >
+              {sex}
             </option>
           ))}
         </select>
@@ -202,22 +220,6 @@ const AdminPanel = () => {
         </select>
         <select
           style={styles.input}
-          value={selectedSex}
-          name="sex"
-          onChange={handleFilterChange}
-        >
-          <option value="">Select Sex</option>
-          {sexOptions.map((sex, index) => (
-            <option
-              key={index}
-              value={sex}
-            >
-              {sex}
-            </option>
-          ))}
-        </select>
-        <select
-          style={styles.input}
           value={type}
           name="type"
           onChange={handleFilterChange}
@@ -236,28 +238,28 @@ const AdminPanel = () => {
           selected={date ? new Date(date) : null}
           onChange={handleDateChange}
           dateFormat="yyyy-MM-dd"
-          className="mt-1 block w-full p-2 border border-gray-300 bg-sky-100 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary bg-n-6"
+          className="mt-1 block w-full p-2 border border-gray-300 bg-sky-100 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
           placeholderText="Select date"
         />
         <input
-          type="text"
+          type="number"
           style={styles.input}
-          placeholder="YouTube Video ID"
-          value={videoId}
-          onChange={(e) => setVideoId(e.target.value)}
+          placeholder="Team 1 Score"
+          value={score1}
+          onChange={(e) => setScore1(e.target.value)}
         />
-        <textarea
+        <input
+          type="number"
           style={styles.input}
-          placeholder="Enter your summary"
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
-          rows={4}
+          placeholder="Team 2 Score"
+          value={score2}
+          onChange={(e) => setScore2(e.target.value)}
         />
         <button
           type="submit"
           style={styles.button}
         >
-          Update Video ID and Summary
+          Update Scores
         </button>
       </form>
       {message && <p style={styles.message}>{message}</p>}
@@ -299,4 +301,4 @@ const AdminPanel = () => {
   );
 };
 
-export default AdminPanel;
+export default UpdateScore;

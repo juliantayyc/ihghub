@@ -48,7 +48,7 @@ const styles = {
     maxWidth: '800px',
     textAlign: 'center',
     wordWrap: 'break-word',
-    textAlign: 'left',
+    'white-space': 'pre-line',
   },
 };
 

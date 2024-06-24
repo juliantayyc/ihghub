@@ -86,7 +86,6 @@ const GameDetail = () => {
   const { game } = state;
   const [videoId, setVideoId] = useState(null);
   const [loading, setLoading] = useState(true);
-  //   const navigate = useNavigate();
 
   useEffect(() => {
     const getLiveStream = async () => {
