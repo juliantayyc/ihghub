@@ -1,11 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import venuesData from '../constants/venuesData.json';
+import axios from 'axios';
 import BigMap from './BigMap';
+import { APP_SERVER_URL } from '../constants';
 
 const VenueDetails = () => {
   const { id } = useParams();
-  const venue = venuesData.find((v) => v.id.toString() === id);
+  const [venue, setVenue] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchVenue = async () => {
+      try {
+        const response = await axios.get(`${APP_SERVER_URL}/venuesData/${id}`);
+        setVenue(response.data);
+      } catch (error) {
+        console.error('Error fetching venue:', error);
+        setError('Failed to load venue');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVenue();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!venue) {
     return <div>Venue not found</div>;

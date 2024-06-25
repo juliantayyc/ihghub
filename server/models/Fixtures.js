@@ -65,5 +65,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Fixtures.addHook('beforeValidate', async (fixture, options) => {
+    const { Venues } = require('../models'); // Adjust the path to your models
+    const venues = await Venues.findAll();
+    const validVenues = venues.map((venue) => venue.name);
+
+    if (!validVenues.includes(fixture.venue)) {
+      throw new Error(
+        `Invalid venue name: ${
+          fixture.venue
+        }. Valid venues are: ${validVenues.join(', ')}`
+      );
+    }
+  });
+
+  return Fixtures;
+
   return Fixtures;
 };
