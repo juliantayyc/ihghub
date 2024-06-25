@@ -21,6 +21,9 @@ app.use('/fixturesData', fixturesRouter);
 const leaderboardRouter = require('./routes/Leaderboard');
 app.use('/leaderboardData', leaderboardRouter);
 
+const venuesRouter = require('./routes/Venues');
+app.use('/venuesData', venuesRouter);
+
 const usersRouter = require('./routes/Users');
 app.use('/auth', usersRouter);
 

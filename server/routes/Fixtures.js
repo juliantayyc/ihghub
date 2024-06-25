@@ -1,32 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { Fixtures } = require('../models');
+const { Fixtures, Venues } = require('../models');
 const { Op } = require('sequelize');
-const OpenAI = require('openai');
 const axios = require('axios');
-const YOUTUBE_API_KEY = process.env.VITE_APP_YOUTUBE_API_KEY;
-
-const fetchCaptions = async (videoId) => {
-  try {
-    const response = await axios.get(
-      `https://www.googleapis.com/youtube/v3/captions?part=snippet&videoId=${videoId}&key=${YOUTUBE_API_KEY}`
-    );
-    const captionId = response.data.items[0]?.id;
-
-    if (!captionId) {
-      console.error('No captions found for this video.');
-      return null;
-    }
-
-    const captionResponse = await axios.get(
-      `https://www.googleapis.com/youtube/v3/captions/${captionId}?tfmt=srt&key=${YOUTUBE_API_KEY}`
-    );
-    return captionResponse.data;
-  } catch (error) {
-    console.error('Error fetching captions:', error);
-    return null;
-  }
-};
 
 router.get('/live', async (req, res) => {
   const now = new Date();
@@ -68,17 +44,28 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const fixture = req.body;
-  await Fixtures.create(fixture)
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      if (err.name === 'SequelizeUniqueConstraintError') {
-        res.status(400).json({ error: 'Duplicate fixture entry' });
-      } else {
-        res.status(400).json(err);
-      }
-    });
+
+  try {
+    const venues = await Venues.findAll();
+    const validVenues = venues.map((venue) => venue.name);
+
+    if (!validVenues.includes(fixture.venue)) {
+      return res.status(400).json({
+        error: `Invalid venue name. Valid venues are: ${validVenues.join(
+          ', '
+        )}`,
+      });
+    }
+
+    const newFixture = await Fixtures.create(fixture);
+    res.json(newFixture);
+  } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      res.status(400).json({ error: 'Duplicate fixture entry' });
+    } else {
+      res.status(400).json(err);
+    }
+  }
 });
 
 router.put('/:id', async (req, res) => {
@@ -100,16 +87,28 @@ router.put('/:id', async (req, res) => {
   } = req.body;
 
   try {
+    const venues = await Venues.findAll();
+    const validVenues = venues.map((venue) => venue.name);
+
+    if (!validVenues.includes(venue)) {
+      return res.status(400).json({
+        error: `Invalid venue name. Valid venues are: ${validVenues.join(
+          ', '
+        )}`,
+      });
+    }
+
     const fixture = await Fixtures.findOne({ where: { id } });
 
     if (fixture) {
+      // Update all fields from request body
       fixture.sport = sport;
       fixture.sex = sex;
       fixture.team1 = team1;
       fixture.team2 = team2;
       fixture.score1 = score1;
       fixture.score2 = score2;
-      fixture.venue = venue;
+      fixture.venue = venue; // Update venue
       fixture.type = type;
       fixture.date = date;
       fixture.startTime = startTime;
@@ -123,6 +122,7 @@ router.put('/:id', async (req, res) => {
       res.status(404).json({ message: 'Fixture not found' });
     }
   } catch (error) {
+    console.error('Error updating fixture:', error);
     res
       .status(500)
       .json({ error: 'An error occurred while updating the fixture' });
