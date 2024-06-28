@@ -12,7 +12,12 @@ import Signup from './pages/Signup';
 import Live from './pages/Live';
 import GameDetail from './components/GameDetail';
 import GameSummary from './components/GameSummary';
+import OfficialPanel from './pages/OfficialPanel';
 import AdminPanel from './pages/AdminPanel';
+import CreateFixture from './components/CreateFixture';
+import UpdateFixture from './components/UpdateFixture';
+import CreateVenue from './components/CreateVenue';
+import UpdateVenue from './components/UpdateVenue';
 import UploadVideo from './components/UploadVideo';
 import UpdateScore from './components/UpdateScore';
 import { Route, Routes } from 'react-router-dom';
@@ -65,6 +70,10 @@ const App = () => {
             element={<GameSummary />}
           />
           <Route
+            path="/official"
+            element={<OfficialPanel />}
+          />
+          <Route
             path="/admin"
             element={<AdminPanel />}
           />
@@ -75,6 +84,22 @@ const App = () => {
           <Route
             path="/updatescore"
             element={<UpdateScore />}
+          />
+          <Route
+            path="/createfixture"
+            element={<CreateFixture />}
+          />
+          <Route
+            path="/updatefixture"
+            element={<UpdateFixture />}
+          />
+          <Route
+            path="/createvenue"
+            element={<CreateVenue />}
+          />
+          <Route
+            path="/updatevenue"
+            element={<UpdateVenue />}
           />
           {/* 501 page */}
           <Route

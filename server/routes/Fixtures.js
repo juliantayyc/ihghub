@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { Fixtures, Venues } = require('../models');
 const { Op } = require('sequelize');
-const axios = require('axios');
 
 router.get('/live', async (req, res) => {
   const now = new Date();
@@ -141,6 +140,37 @@ router.get('/search', async (req, res) => {
         team2,
         type,
         date,
+      },
+    });
+
+    if (fixture) {
+      res.json(fixture);
+    } else {
+      res.status(404).json({ message: 'Game not found' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while searching for the game' });
+  }
+});
+
+router.get('/getfixture', async (req, res) => {
+  const { sport, sex, team1, team2, type, venue, date, startTime, endTime } =
+    req.query;
+
+  try {
+    const fixture = await Fixtures.findOne({
+      where: {
+        sport,
+        sex,
+        team1,
+        team2,
+        type,
+        venue,
+        date,
+        startTime,
+        endTime,
       },
     });
 

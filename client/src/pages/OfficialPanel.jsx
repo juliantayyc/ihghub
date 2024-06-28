@@ -41,62 +41,55 @@ const styles = {
   },
 };
 
-const AdminPanel = () => {
+const OfficialPanel = () => {
   const navigate = useNavigate();
 
-  const handleCreateFixtureClick = () => {
-    navigate('/createfixture');
+  const handleUploadVideoClick = () => {
+    navigate('/uploadvideo');
   };
 
-  const handleUpdateFixtureClick = () => {
-    navigate('/updatefixture');
+  const handleUpdateScoreClick = () => {
+    navigate('/updatescore');
   };
 
-  const handleCreateVenueClick = () => {
-    navigate('/createvenue');
-  };
-
-  const handleUpdateVenueClick = () => {
-    navigate('/updatevenue');
+  const handleRegistrationClick = () => {
+    navigate('/registration');
   };
 
   return (
     <div style={styles.container}>
-      <h1>Admin Panel</h1>
+      <h1>Official Panel</h1>
       <div style={styles.cardContainer}>
         <div
           style={styles.card}
-          onClick={handleCreateFixtureClick}
+          onClick={handleUploadVideoClick}
         >
-          <div style={styles.cardTitle}>Create Fixture</div>
+          <div style={styles.cardTitle}>Upload Live Stream Video</div>
           <p style={styles.cardDescription}>
-            Click here to create a new fixture
+            Click here to upload a new video of your match
           </p>
         </div>
         <div
           style={styles.card}
-          onClick={handleUpdateFixtureClick}
+          onClick={handleUpdateScoreClick}
         >
-          <div style={styles.cardTitle}>Update Fixture</div>
-          <p style={styles.cardDescription}>Click here to update a fixture</p>
+          <div style={styles.cardTitle}>Update Score</div>
+          <p style={styles.cardDescription}>
+            Click here to update scores of your match
+          </p>
         </div>
         <div
           style={styles.card}
-          onClick={handleCreateVenueClick}
+          onClick={handleRegistrationClick}
         >
-          <div style={styles.cardTitle}>Create Venue</div>
-          <p style={styles.cardDescription}>Click here to create a new venue</p>
-        </div>
-        <div
-          style={styles.card}
-          onClick={handleUpdateVenueClick}
-        >
-          <div style={styles.cardTitle}>Update Venue</div>
-          <p style={styles.cardDescription}>Click here to update a venue</p>
+          <div style={styles.cardTitle}>Registration</div>
+          <p style={styles.cardDescription}>
+            Click here to manage registrations
+          </p>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminPanel;
+export default OfficialPanel;

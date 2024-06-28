@@ -62,17 +62,22 @@ export const navigation = [
   },
   {
     id: '4',
+    title: 'Official Panel',
+    url: '/official',
+  },
+  {
+    id: '5',
     title: 'Admin Panel',
     url: '/admin',
   },
   {
-    id: '5',
+    id: '6',
     title: 'New account',
     url: '/signup',
     onlyMobile: true,
   },
   {
-    id: '6',
+    id: '7',
     title: 'Log in',
     url: '/login',
     onlyMobile: true,
