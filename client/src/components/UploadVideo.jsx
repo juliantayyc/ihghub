@@ -59,7 +59,7 @@ const sportsOptions = [
   'Badminton',
 ];
 
-const teamsOptions = ['TH', 'EH', 'KR', 'SH', 'RH', 'KE'];
+const teamsOptions = ['TH', 'EH', 'KR', 'SH', 'RH', 'KE', 'All'];
 
 const sexOptions = ['M', 'F', 'Mixed'];
 

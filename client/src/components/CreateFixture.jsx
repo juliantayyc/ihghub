@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -65,58 +65,45 @@ const sexOptions = ['M', 'F', 'Mixed'];
 
 const typeOptions = ['Carnival', 'Prelims', 'Semis', 'Finals'];
 
-const UpdateScore = () => {
+const CreateFixture = () => {
   const [selectedSport, setSelectedSport] = useState('');
   const [selectedTeam1, setSelectedTeam1] = useState('');
   const [selectedTeam2, setSelectedTeam2] = useState('');
   const [selectedSex, setSelectedSex] = useState('');
   const [type, setType] = useState('');
   const [date, setDate] = useState('');
-  const [score1, setScore1] = useState('');
-  const [score2, setScore2] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [selectedVenue, setSelectedVenue] = useState('');
+  const [venues, setVenues] = useState([]);
   const [message, setMessage] = useState('');
-  const [filteredFixtures, setFilteredFixtures] = useState([]);
 
-  const filterFixtures = async () => {
-    try {
-      const filter = {
-        sport: selectedSport,
-        team1: selectedTeam1,
-        team2: selectedTeam2,
-        sex: selectedSex,
-        type,
-        date,
-      };
-
-      const response = await axios.get(
-        `${APP_SERVER_URL}/fixturesData/search`,
-        {
-          params: filter,
-        }
-      );
-
-      const game = response.data;
-
-      if (game) {
-        await axios.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
-          score1,
-          score2,
-        });
-        setMessage('Scores updated successfully!');
-      } else {
-        setMessage('No game found with the specified details');
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+        setVenues(response.data);
+      } catch (error) {
+        console.error('Error fetching venues:', error);
       }
-    } catch (error) {
-      console.error('Error updating scores:', error);
-      setMessage('Error updating scores');
-    }
-  };
+    };
+    fetchVenues();
+  }, []);
 
   const handleDateChange = (selectedDate) => {
     const formattedDate = selectedDate
       ? selectedDate.toISOString().split('T')[0]
       : '';
     setDate(formattedDate);
+  };
+
+  const handleTimeChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'startTime') {
+      setStartTime(value);
+    } else {
+      setEndTime(value);
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -137,19 +124,40 @@ const UpdateScore = () => {
       case 'type':
         setType(value);
         break;
+      case 'venue':
+        setSelectedVenue(value);
+        break;
       default:
         break;
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    filterFixtures();
+    try {
+      const fixtureData = {
+        sport: selectedSport,
+        team1: selectedTeam1,
+        team2: selectedTeam2,
+        sex: selectedSex,
+        type,
+        date,
+        startTime,
+        endTime,
+        venue: selectedVenue,
+      };
+
+      await axios.post(`${APP_SERVER_URL}/fixturesData`, fixtureData);
+      setMessage('Fixture created successfully!');
+    } catch (error) {
+      console.error('Error creating fixture:', error);
+      setMessage('Error creating fixture');
+    }
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={{ marginTop: '20px' }}>Update Scores</h1>{' '}
+      <h1 style={{ marginTop: '20px' }}>Create Fixture</h1>
       <form
         style={styles.form}
         onSubmit={handleSubmit}
@@ -234,6 +242,22 @@ const UpdateScore = () => {
             </option>
           ))}
         </select>
+        <select
+          style={styles.input}
+          value={selectedVenue}
+          name="venue"
+          onChange={handleFilterChange}
+        >
+          <option value="">Select Venue</option>
+          {venues.map((venue, index) => (
+            <option
+              key={index}
+              value={venue.name}
+            >
+              {venue.name}
+            </option>
+          ))}
+        </select>
         <DatePicker
           selected={date ? new Date(date) : null}
           onChange={handleDateChange}
@@ -242,63 +266,29 @@ const UpdateScore = () => {
           placeholderText="Select date"
         />
         <input
-          type="number"
+          type="time"
           style={styles.input}
-          placeholder="Team 1 Score"
-          value={score1}
-          onChange={(e) => setScore1(e.target.value)}
+          name="startTime"
+          value={startTime}
+          onChange={handleTimeChange}
         />
         <input
-          type="number"
+          type="time"
           style={styles.input}
-          placeholder="Team 2 Score"
-          value={score2}
-          onChange={(e) => setScore2(e.target.value)}
+          name="endTime"
+          value={endTime}
+          onChange={handleTimeChange}
         />
         <button
           type="submit"
           style={styles.button}
         >
-          Update Scores
+          Create Fixture
         </button>
       </form>
       {message && <p style={styles.message}>{message}</p>}
-      <div className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredFixtures.map((fixture, index) => (
-          <div
-            key={index}
-            className="relative p-6 bg-color-3 bg-opacity-10 shadow-md rounded-xl border border-n-1/10 hover:shadow-lg transition-shadow duration-200"
-          >
-            <div className="mb-4 text-center">
-              <span className="h6 block">
-                {new Date(fixture.date).toLocaleDateString('en-GB', {
-                  weekday: 'short',
-                  day: 'numeric',
-                  month: 'numeric',
-                  year: 'numeric',
-                })}
-              </span>
-              <span className="block text-n-2 code">
-                {fixture.startTime} - {fixture.endTime}
-              </span>
-            </div>
-            <div className="mb-4 text-center">
-              <span className="block text-xl font-bold text-[#6c2f1e8d]">
-                {fixture.team1} vs {fixture.team2}
-              </span>
-            </div>
-            <div className="text-n-13 text-center">
-              <span className="block">
-                {fixture.sport} {fixture.sex}
-              </span>
-              <span className="block text-n-3">{fixture.type}</span>
-              <span className="block text-n-3">{fixture.venue}</span>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
 
-export default UpdateScore;
+export default CreateFixture;
