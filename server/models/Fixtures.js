@@ -26,10 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      venue: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       type: {
         type: DataTypes.ENUM('Prelims', 'Semis', 'Finals', 'Carnival'),
         allowNull: false,
@@ -54,6 +50,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      venueId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Venues',
+          key: 'id',
+        },
+      },
     },
     {
       indexes: [
@@ -65,21 +69,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Fixtures.addHook('beforeValidate', async (fixture, options) => {
-    const { Venues } = require('../models'); // Adjust the path to your models
-    const venues = await Venues.findAll();
-    const validVenues = venues.map((venue) => venue.name);
-
-    if (!validVenues.includes(fixture.venue)) {
-      throw new Error(
-        `Invalid venue name: ${
-          fixture.venue
-        }. Valid venues are: ${validVenues.join(', ')}`
-      );
-    }
-  });
-
-  return Fixtures;
+  Fixtures.associate = (models) => {
+    Fixtures.belongsTo(models.Venues, {
+      foreignKey: 'venueId',
+      as: 'venues',
+    });
+  };
 
   return Fixtures;
 };

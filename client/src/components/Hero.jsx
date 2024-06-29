@@ -9,11 +9,16 @@ import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [todaysGames, setTodaysGames] = useState([]);
+  const [venuesMap, setVenuesMap] = useState({}); // State to store venues for quick lookup
   const parallaxRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchTodaysGames();
+  }, []);
+
+  useEffect(() => {
+    fetchVenues();
   }, []);
 
   const fetchTodaysGames = async () => {
@@ -39,6 +44,19 @@ const Hero = () => {
     }
   };
 
+  const fetchVenues = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+      const venues = response.data.reduce((map, venue) => {
+        map[venue.id] = venue.name; // Store venue names in an object for quick lookup
+        return map;
+      }, {});
+      setVenuesMap(venues);
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
+
   // Function to convert HH:mm:ss to total seconds
   const convertTimeToSeconds = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
@@ -51,6 +69,17 @@ const Hero = () => {
     } else {
       navigate(`/summary/${game.id}`, { state: { ...game } });
     }
+  };
+
+  // Function to check if game is currently live based on start and end times
+  const isGameLive = (startTime, endTime) => {
+    const now = new Date();
+    const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
+      .toISOString()
+      .split('T')[0];
+    const start = new Date(`${today} ${startTime}`);
+    const end = new Date(`${today} ${endTime}`);
+    return start <= now && now <= end;
   };
 
   return (
@@ -101,7 +130,7 @@ const Hero = () => {
                   todaysGames.map((game, index) => (
                     <div
                       key={index}
-                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative ${'cursor-pointer'}`}
+                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative cursor-pointer`}
                       onClick={() => handleCardClick(game)}
                     >
                       {isGameLive(game.startTime, game.endTime) && (
@@ -112,7 +141,7 @@ const Hero = () => {
                           {game.sport} - {game.sex}
                         </div>
                         <div className="text-n-2 md:ml-4 md:mr-4 px-2">
-                          {game.venue}
+                          {venuesMap[game.venueId]}
                         </div>
                         <div className="text-n-2 md:ml-4 md:mr-4 px-2">
                           {game.startTime} - {game.endTime}
@@ -141,19 +170,6 @@ const Hero = () => {
       </div>
     </Section>
   );
-};
-
-// Function to check if game is currently live based on start and end times
-const isGameLive = (startTime, endTime) => {
-  const now = new Date();
-  const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
-    .toISOString()
-    .split('T')[0];
-  const start = new Date(`${today} ${startTime}`);
-  const end = new Date(`${today} ${endTime}`);
-  console.log(now);
-  console.log(start);
-  return start <= now && now <= end;
 };
 
 export default Hero;

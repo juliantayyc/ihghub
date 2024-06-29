@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { YOUTUBE_API_KEY } from '../constants';
+import { APP_SERVER_URL } from '../constants';
 
 const styles = {
   container: {
     padding: '20px',
     textAlign: 'center',
+    marginTop: '20px',
   },
   heading: {
     fontSize: '2em',
@@ -81,11 +83,22 @@ const fetchLiveStream = async (sport) => {
   return liveStream ? liveStream.id.videoId : null;
 };
 
+const fetchVenue = async (venueId) => {
+  try {
+    const response = await axios.get(`${APP_SERVER_URL}/venuesData/${venueId}`);
+    return response.data.name;
+  } catch (error) {
+    console.error('Error fetching venue:', error);
+    return 'Unknown Venue';
+  }
+};
+
 const GameDetail = () => {
   const { state } = useLocation();
   const { game } = state;
   const [videoId, setVideoId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [venue, setVenue] = useState('');
 
   useEffect(() => {
     const getLiveStream = async () => {
@@ -94,8 +107,14 @@ const GameDetail = () => {
       setLoading(false);
     };
 
+    const getVenueName = async () => {
+      const venueName = await fetchVenue(game.venueId);
+      setVenue(venueName);
+    };
+
     getLiveStream();
-  }, [game.sport]);
+    getVenueName();
+  }, [game.sport, game.venueId]);
 
   return (
     <div style={styles.container}>
@@ -110,7 +129,7 @@ const GameDetail = () => {
         <p style={styles.cardText}>
           Score: {game.score1} - {game.score2}
         </p>
-        <p style={styles.cardText}>Venue: {game.venue}</p>
+        <p style={styles.cardText}>Venue: {venue}</p>
         <p style={styles.cardText}>Type: {game.type}</p>
         <p style={styles.cardText}>Date: {game.date}</p>
         <p style={styles.cardText}>

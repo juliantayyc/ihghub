@@ -14,23 +14,40 @@ const Fixtures = () => {
     sport: '',
     sex: '',
   });
+  const [venuesMap, setVenuesMap] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`${APP_SERVER_URL}/fixturesData`)
-      .then((response) => {
-        const sortedFixtures = [...response.data].sort((a, b) => {
-          const dateComparison = a.date.localeCompare(b.date);
-          if (dateComparison !== 0) return dateComparison;
-          return a.startTime.localeCompare(b.startTime);
-        });
-        setFixtures(sortedFixtures);
-      })
-      .catch((error) => {
-        console.error('There was an error!', error);
-      });
+    fetchFixturesData();
+    fetchVenues();
   }, []);
+
+  const fetchFixturesData = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/fixturesData`);
+      const sortedFixtures = [...response.data].sort((a, b) => {
+        const dateComparison = a.date.localeCompare(b.date);
+        if (dateComparison !== 0) return dateComparison;
+        return a.startTime.localeCompare(b.startTime);
+      });
+      setFixtures(sortedFixtures);
+    } catch (error) {
+      console.error('Error fetching fixtures:', error);
+    }
+  };
+
+  const fetchVenues = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+      const venues = response.data.reduce((map, venue) => {
+        map[venue.id] = venue.name; // Store venue names in an object for quick lookup
+        return map;
+      }, {});
+      setVenuesMap(venues);
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -144,7 +161,9 @@ const Fixtures = () => {
                 {fixture.sport} {fixture.sex}
               </span>
               <span className="block text-n-3">{fixture.type}</span>
-              <span className="block text-n-3">{fixture.venue}</span>
+              <span className="block text-n-3">
+                {venuesMap[fixture.venueId]}
+              </span>
             </div>
           </div>
         ))}

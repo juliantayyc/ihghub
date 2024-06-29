@@ -5,6 +5,7 @@ const styles = {
   container: {
     padding: '20px',
     textAlign: 'center',
+    marginTop: '20px',
   },
   cardContainer: {
     display: 'flex',
