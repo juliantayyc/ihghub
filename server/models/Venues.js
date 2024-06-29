@@ -29,5 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Venues.associate = (models) => {
+    Venues.hasMany(models.Fixtures, {
+      foreignKey: 'venueId',
+      as: 'fixtures',
+    });
+  };
+
   return Venues;
 };

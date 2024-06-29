@@ -7,6 +7,7 @@ const styles = {
   container: {
     padding: '20px',
     textAlign: 'center',
+    marginTop: '20px',
   },
   heading: {
     fontSize: '2em',
@@ -39,20 +40,35 @@ const styles = {
 
 const Live = () => {
   const [liveGames, setLiveGames] = useState([]);
+  const [venuesMap, setVenuesMap] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchLiveGames = async () => {
-      try {
-        const response = await axios.get(`${APP_SERVER_URL}/fixturesData/live`);
-        setLiveGames(response.data);
-      } catch (error) {
-        console.error('Error fetching live games:', error);
-      }
-    };
-
     fetchLiveGames();
+    fetchVenues();
   }, []);
+
+  const fetchLiveGames = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/fixturesData/live`);
+      setLiveGames(response.data);
+    } catch (error) {
+      console.error('Error fetching live games:', error);
+    }
+  };
+
+  const fetchVenues = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+      const venues = response.data.reduce((map, venue) => {
+        map[venue.id] = venue.name; // Store venue names in an object for quick lookup
+        return map;
+      }, {});
+      setVenuesMap(venues);
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
 
   const handleCardClick = (game) => {
     navigate(`/game/${game.id}`, { state: { game } });
@@ -78,7 +94,7 @@ const Live = () => {
               <p style={styles.cardText}>
                 Score: {game.score1} - {game.score2}
               </p>
-              <p style={styles.cardText}>Venue: {game.venue}</p>
+              <p style={styles.cardText}>Venue: {venuesMap[game.venueId]}</p>
               <p style={styles.cardText}>Type: {game.type}</p>
               <p style={styles.cardText}>Date: {game.date}</p>
               <p style={styles.cardText}>

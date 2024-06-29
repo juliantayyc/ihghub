@@ -77,6 +77,7 @@ const UpdateFixture = () => {
   const [selectedCurrentSex, setSelectedCurrentSex] = useState('');
   const [currentType, setCurrentType] = useState('');
   const [currentDate, setCurrentDate] = useState('');
+  const [currentVenueId, setCurrentVenueId] = useState('');
   const [currentVenue, setCurrentVenue] = useState('');
   const [currentStartTime, setCurrentStartTime] = useState('');
   const [currentEndTime, setCurrentEndTime] = useState('');
@@ -112,7 +113,7 @@ const UpdateFixture = () => {
         team2: selectedCurrentTeam2,
         sex: selectedCurrentSex,
         type: currentType,
-        venue: currentVenue,
+        venueId: currentVenueId,
         date: currentDate,
         startTime: currentStartTime,
         endTime: currentEndTime,
@@ -179,7 +180,16 @@ const UpdateFixture = () => {
           setCurrentType(value);
           break;
         case 'venue':
-          setCurrentVenue(value);
+          try {
+            const selectedVenue = venues.find((venue) => venue.name === value);
+            if (selectedVenue) {
+              setCurrentVenueId(selectedVenue.id);
+              setCurrentVenue(value);
+              console.log(selectedVenue.id);
+            }
+          } catch (error) {
+            console.error('Error finding venue ID:', error);
+          }
           break;
         default:
           break;
