@@ -1,16 +1,57 @@
-import { curve, heroBackground, robot } from '../assets';
+import React, { useState, useEffect, useRef } from 'react';
+import { curve } from '../assets';
 import Button from './Button';
 import Section from './Section';
-import { BackgroundCircles, BottomLine, Gradient } from './design/Hero';
-import { heroIcons } from '../constants';
-import { ScrollParallax } from 'react-just-parallax';
-import { useRef } from 'react';
-import Generating from './Generating';
-import Notification from './Notification';
-import CompanyLogos from './CompanyLogos';
+import { BackgroundCircles, Gradient } from './design/Hero';
+import axios from 'axios';
+import { APP_SERVER_URL } from '../constants';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const [todaysGames, setTodaysGames] = useState([]);
   const parallaxRef = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchTodaysGames();
+  }, []);
+
+  const fetchTodaysGames = async () => {
+    try {
+      const response = await axios.get(`${APP_SERVER_URL}/fixturesData`);
+      const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0]; // Get today's date in YYYY-MM-DD format
+      const filteredGames = response.data.filter(
+        (fixture) => fixture.date === today
+      );
+
+      // Sort games based on startTime (assuming startTime and endTime are in HH:mm:ss format)
+      filteredGames.sort((a, b) => {
+        const startTimeA = convertTimeToSeconds(a.startTime);
+        const startTimeB = convertTimeToSeconds(b.startTime);
+        return startTimeA - startTimeB;
+      });
+
+      setTodaysGames(filteredGames);
+    } catch (error) {
+      console.error('There was an error fetching the fixtures data!', error);
+    }
+  };
+
+  // Function to convert HH:mm:ss to total seconds
+  const convertTimeToSeconds = (timeString) => {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+
+  const handleCardClick = (game) => {
+    if (isGameLive(game.startTime, game.endTime)) {
+      navigate(`/game/${game.id}`, { state: { game } });
+    } else {
+      navigate(`/summary/${game.id}`, { state: { ...game } });
+    }
+  };
 
   return (
     <Section
@@ -26,7 +67,7 @@ const Hero = () => {
       >
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
           <h1 className="h1 mb-6">
-            Welcome to {` `}
+            Welcome to{' '}
             <span className="inline-block relative">
               IHG Hub{' '}
               <img
@@ -48,64 +89,71 @@ const Hero = () => {
             Get started
           </Button>
         </div>
-        <div className="relative max-w-[23rem] mx-auto md:max-w-5xl xl:mb-24">
+        <div className="relative max-w-full mx-auto md:max-w-5xl xl:mb-24">
           <div className="relative z-1 p-0.5 rounded-2xl bg-color-1 border border-black">
             <div className="relative bg-n-8 rounded-[1rem]">
               <div className="h-[1.4rem] bg-n-10 rounded-t-[0.9rem]" />
-              <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
-                <h1 className="h3 mb-6">Today's games:</h1>
+              <div className="relative z-1 max-w-full mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[0.75rem]">
+                <h1 className="h3 mb-2">Today's games:</h1>
               </div>
-              <div className="aspect-[33/40] rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
-                {/* <img
-                  src={robot}
-                  className="w-full scale-[1.7] translate-y-[8%] md:scale-[1] md:-translate-y-[10%] lg:-translate-y-[23%]"
-                  width={1024}
-                  height={490}
-                  alt="AI"
-                />
-
-                <Generating className="absolute left-4 right-4 bottom-5 md:left-1/2 md:right-auto md:bottom-8 md:w-[31rem] md:-translate-x-1/2" /> */}
-
-                {/* <ScrollParallax isAbsolutelyPositioned>
-                  <ul className="hidden absolute -left-[5.5rem] bottom-[7.5rem] px-1 py-1 bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl xl:flex">
-                    {heroIcons.map((icon, index) => (
-                      <li className="p-5" key={index}>
-                        <img src={icon} width={24} height={25} alt={icon} />
-                      </li>
-                    ))}
-                  </ul>
-                </ScrollParallax>
-
-                <ScrollParallax isAbsolutelyPositioned>
-                  <Notification
-                    className="hidden absolute -right-[5.5rem] bottom-[11rem] w-[18rem] xl:flex"
-                    title="Code generation"
-                  />
-                </ScrollParallax> */}
+              <div className="max-h-[30rem] overflow-y-auto p-2 space-y-4">
+                {todaysGames.length > 0 ? (
+                  todaysGames.map((game, index) => (
+                    <div
+                      key={index}
+                      className={`p-4 bg-orange-100 rounded-lg shadow-md flex flex-col md:flex-row md:justify-between items-center relative ${'cursor-pointer'}`}
+                      onClick={() => handleCardClick(game)}
+                    >
+                      {isGameLive(game.startTime, game.endTime) && (
+                        <div className="absolute top-2 right-2 w-3 h-3 bg-red-500 rounded-full animate-ping" />
+                      )}
+                      <div className="flex flex-col md:flex-row md:justify-between items-center md:space-x-4">
+                        <div className="text-n-1 md:ml-4 md:mr-4 px-2">
+                          {game.sport} - {game.sex}
+                        </div>
+                        <div className="text-n-2 md:ml-4 md:mr-4 px-2">
+                          {game.venue}
+                        </div>
+                        <div className="text-n-2 md:ml-4 md:mr-4 px-2">
+                          {game.startTime} - {game.endTime}
+                        </div>
+                      </div>
+                      <div className="mt-2 md:mt-0 md:mr-4 flex flex-row items-center space-x-2">
+                        <span className="font-bold text-lg">{game.team1}</span>
+                        <span className="text-n-2">{game.score1}</span>
+                        <span className="font-bold text-lg">vs</span>
+                        <span className="text-n-2">{game.score2}</span>
+                        <span className="font-bold text-lg">{game.team2}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 bg-orange-100 rounded-lg shadow-md text-center">
+                    Our athletes are resting... there are no games today!
+                  </div>
+                )}
               </div>
             </div>
-
             <Gradient />
           </div>
-          {/* <div className="absolute -top-[54%] left-1/2 w-[234%] -translate-x-1/2 md:-top-[46%] md:w-[138%] lg:-top-[104%]">
-            <img
-              src={heroBackground}
-              className="w-full"
-              width={1440}
-              height={1800}
-              alt="hero"
-            />
-          </div> */}
-
           <BackgroundCircles />
         </div>
-
-        {/* <CompanyLogos className="hidden relative z-10 mt-20 lg:block text-n-1" /> */}
       </div>
-
-      {/* <BottomLine /> */}
     </Section>
   );
+};
+
+// Function to check if game is currently live based on start and end times
+const isGameLive = (startTime, endTime) => {
+  const now = new Date();
+  const today = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+  const start = new Date(`${today} ${startTime}`);
+  const end = new Date(`${today} ${endTime}`);
+  console.log(now);
+  console.log(start);
+  return start <= now && now <= end;
 };
 
 export default Hero;

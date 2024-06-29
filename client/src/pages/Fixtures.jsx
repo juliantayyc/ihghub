@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Dropdown from '../components/Dropdown';
 import api from '../util/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 const Fixtures = () => {
   const [fixtures, setFixtures] = useState([]);
@@ -12,6 +13,7 @@ const Fixtures = () => {
     sport: '',
     sex: '',
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -43,6 +45,10 @@ const Fixtures = () => {
 
   const handleClearDate = () => {
     setFilter((prevFilter) => ({ ...prevFilter, date: '' }));
+  };
+
+  const handleCardClick = (fixture) => {
+    navigate(`/summary/${fixture.id}`, { state: { ...fixture } });
   };
 
   const filteredFixtures = fixtures.filter((fixture) => {
@@ -111,7 +117,8 @@ const Fixtures = () => {
         {filteredFixtures.map((fixture, index) => (
           <div
             key={index}
-            className="relative p-6 bg-color-3 bg-opacity-10 shadow-md rounded-xl border border-n-1/10 hover:shadow-lg transition-shadow duration-200"
+            className="relative p-6 bg-color-3 bg-opacity-10 shadow-md rounded-xl border border-n-1/10 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+            onClick={() => handleCardClick(fixture)}
           >
             <div className="mb-4 text-center">
               <span className="h6 block">
@@ -136,6 +143,7 @@ const Fixtures = () => {
                 {fixture.sport} {fixture.sex}
               </span>
               <span className="block text-n-3">{fixture.type}</span>
+              <span className="block text-n-3">{fixture.venue}</span>
             </div>
           </div>
         ))}

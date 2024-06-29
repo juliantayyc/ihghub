@@ -37,6 +37,7 @@ import {
 } from '../assets';
 
 export const APP_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+export const YOUTUBE_API_KEY = import.meta.env.VITE_APP_YOUTUBE_API_KEY;
 
 export const navigation = [
   {
@@ -61,12 +62,22 @@ export const navigation = [
   },
   {
     id: '4',
+    title: 'Official Panel',
+    url: '/official',
+  },
+  {
+    id: '5',
+    title: 'Admin Panel',
+    url: '/admin',
+  },
+  {
+    id: '6',
     title: 'New account',
     url: '/signup',
     onlyMobile: true,
   },
   {
-    id: '5',
+    id: '7',
     title: 'Log in',
     url: '/login',
     onlyMobile: true,
