@@ -3,10 +3,17 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Replace with your frontend URL
+    credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+  })
+);
+app.use(cookieParser());
 
 // Create Tables if not exist
 const db = require('./models');
@@ -21,7 +28,7 @@ app.use('/fixturesData', fixturesRouter);
 const leaderboardRouter = require('./routes/Leaderboard');
 app.use('/leaderboardData', leaderboardRouter);
 
-const usersRouter = require('./routes/Users');
+const usersRouter = require('./routes/Auth');
 app.use('/auth', usersRouter);
 
 // Serve Client Routes

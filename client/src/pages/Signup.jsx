@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { APP_SERVER_URL } from '../constants';
 
 function Signup() {
   const [serverError, setServerError] = useState('');
@@ -27,7 +28,7 @@ function Signup() {
 
   const onSubmit = (data, { setSubmitting, resetForm }) => {
     axios
-      .post('http://localhost:3001/auth', data)
+      .post(`${APP_SERVER_URL}/auth/signup`, data)
       .then((response) => {
         if (response.data.error) {
           setServerError(response.data.error);

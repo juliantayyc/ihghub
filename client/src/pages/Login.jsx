@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { APP_SERVER_URL } from '../constants';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -7,9 +8,12 @@ function Login() {
 
   const login = () => {
     const data = { username: username, password: password };
-    axios.post('http://localhost:3001/auth/login', data).then((response) => {
-      console.log(response.data);
-    });
+    axios
+      .post(`${APP_SERVER_URL}/auth/login`, data)
+      .then((response) => {})
+      .catch((error) => {
+        console.error('Login failed', error);
+      });
   };
 
   return (

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Dropdown from '../components/Dropdown';
-import axios from 'axios';
-import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const Fixtures = () => {
   const [fixtures, setFixtures] = useState([]);
@@ -15,8 +14,8 @@ const Fixtures = () => {
   });
 
   useEffect(() => {
-    axios
-      .get(`${APP_SERVER_URL}/fixturesData`)
+    api
+      .get(`/fixturesData`)
       .then((response) => {
         const sortedFixtures = [...response.data].sort((a, b) => {
           const dateComparison = a.date.localeCompare(b.date);

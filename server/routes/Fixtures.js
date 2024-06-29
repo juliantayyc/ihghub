@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { Fixtures } = require('../models');
+const verifyJWT = require('../middleware/verifyJWT');
 
-router.get('/', async (req, res) => {
+router.get('/', verifyJWT, async (req, res) => {
   await Fixtures.findAll()
     .then((fixtures) => {
       res.json(fixtures);
