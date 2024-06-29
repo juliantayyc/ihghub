@@ -22,6 +22,12 @@ router.get('/live', async (req, res) => {
         [Op.gte]: adjustedTime,
       },
     },
+    include: [
+      {
+        model: Venues,
+        as: 'venues', // Make sure this matches the alias defined in your association
+      },
+    ],
   })
     .then((fixtures) => {
       res.json(fixtures);
@@ -32,31 +38,40 @@ router.get('/live', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  await Fixtures.findAll()
-    .then((fixtures) => {
-      res.json(fixtures);
-    })
-    .catch((err) => {
-      res.status(400).json(err);
+  try {
+    const fixtures = await Fixtures.findAll({
+      include: [
+        {
+          model: Venues,
+          as: 'venues', // Make sure this matches the alias defined in your association
+        },
+      ],
     });
+
+    res.json(fixtures);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 router.post('/', async (req, res) => {
-  const fixture = req.body;
+  const { venue, ...fixtureData } = req.body; // Destructure venue and the rest of fixtureData
 
   try {
-    const venues = await Venues.findAll();
-    const validVenues = venues.map((venue) => venue.name);
+    // Find the venue by name
+    const venueRecord = await Venues.findOne({ where: { name: venue } });
 
-    if (!validVenues.includes(fixture.venue)) {
+    if (!venueRecord) {
       return res.status(400).json({
-        error: `Invalid venue name. Valid venues are: ${validVenues.join(
-          ', '
-        )}`,
+        error: `Invalid venue name.`,
       });
     }
 
-    const newFixture = await Fixtures.create(fixture);
+    // Add the venueId to fixtureData
+    fixtureData.venueId = venueRecord.id;
+
+    // Create the new fixture with the venueId
+    const newFixture = await Fixtures.create(fixtureData);
     res.json(newFixture);
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
@@ -86,14 +101,12 @@ router.put('/:id', async (req, res) => {
   } = req.body;
 
   try {
-    const venues = await Venues.findAll();
-    const validVenues = venues.map((venue) => venue.name);
+    // Find the venue by name
+    const venueRecord = await Venues.findOne({ where: { name: venue } });
 
-    if (!validVenues.includes(venue)) {
+    if (!venueRecord) {
       return res.status(400).json({
-        error: `Invalid venue name. Valid venues are: ${validVenues.join(
-          ', '
-        )}`,
+        error: `Invalid venue name: ${venue}`,
       });
     }
 
@@ -107,7 +120,7 @@ router.put('/:id', async (req, res) => {
       fixture.team2 = team2;
       fixture.score1 = score1;
       fixture.score2 = score2;
-      fixture.venue = venue; // Update venue
+      fixture.venueId = venueRecord.id; // Update venueId with the validated venue's id
       fixture.type = type;
       fixture.date = date;
       fixture.startTime = startTime;
@@ -156,7 +169,7 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/getfixture', async (req, res) => {
-  const { sport, sex, team1, team2, type, venue, date, startTime, endTime } =
+  const { sport, sex, team1, team2, type, venueId, date, startTime, endTime } =
     req.query;
 
   try {
@@ -167,7 +180,7 @@ router.get('/getfixture', async (req, res) => {
         team1,
         team2,
         type,
-        venue,
+        venueId,
         date,
         startTime,
         endTime,
