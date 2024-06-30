@@ -55,7 +55,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', verifyJWT, async (req, res) => {
   const { venue, ...fixtureData } = req.body; // Destructure venue and the rest of fixtureData
 
   try {
@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyJWT, async (req, res) => {
   const id = req.params.id;
   const {
     sport,
@@ -200,7 +200,7 @@ router.get('/getfixture', async (req, res) => {
   }
 });
 
-router.put('/:id/video', async (req, res) => {
+router.put('/:id/video', verifyJWT, async (req, res) => {
   const id = req.params.id;
   const { videoId, summary } = req.body;
 
@@ -228,7 +228,7 @@ router.put('/:id/video', async (req, res) => {
   }
 });
 
-router.put('/:id/score', async (req, res) => {
+router.put('/:id/score', verifyJWT, async (req, res) => {
   const id = req.params.id;
   const { score1, score2 } = req.body;
 

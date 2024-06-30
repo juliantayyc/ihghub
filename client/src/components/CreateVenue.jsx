@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import api from '../util/axiosInstance';
 import { APP_SERVER_URL } from '../constants';
 
 const styles = {
@@ -54,7 +55,7 @@ const CreateVenue = () => {
         latitude,
       };
 
-      await axios.post(`${APP_SERVER_URL}/venuesData`, venueData);
+      await api.post(`${APP_SERVER_URL}/venuesData`, venueData);
       setMessage('Venue created successfully!');
       // Optionally, clear form fields after successful submission
       setName('');

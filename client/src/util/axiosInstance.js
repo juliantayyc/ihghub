@@ -6,7 +6,7 @@ const api = axios.create({
   withCredentials: true, // This ensures cookies are sent with requests
 });
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   const accessToken = document.cookie
     .split('; ')
     .find((row) => row.startsWith('accessToken='))
@@ -15,7 +15,17 @@ api.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   } else {
-    console.error('No access token found');
+    const { data } = await axios.post(
+      `${APP_SERVER_URL}/auth/refresh-token`,
+      {},
+      { withCredentials: true }
+    );
+    if (data.accessToken) {
+      document.cookie = `accessToken=${data.accessToken}; SameSite=Lax;`;
+      axios.defaults.headers.common['Authorization'] =
+        `Bearer ${data.accessToken}`;
+      return api(originalRequest);
+    }
   }
 
   return config;

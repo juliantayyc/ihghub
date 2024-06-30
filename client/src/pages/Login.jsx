@@ -1,16 +1,24 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { APP_SERVER_URL } from '../constants';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const login = () => {
-    const data = { username: username, password: password };
+    const data = { username, password };
     axios
       .post(`${APP_SERVER_URL}/auth/login`, data)
-      .then((response) => {})
+      .then((response) => {
+        // Assuming the response contains a success status
+        if (response.status === 200) {
+          // Redirect to the home page
+          navigate('/');
+        }
+      })
       .catch((error) => {
         console.error('Login failed', error);
       });

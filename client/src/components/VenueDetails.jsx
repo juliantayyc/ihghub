@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import BigMap from './BigMap';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const VenueDetails = () => {
   const { id } = useParams();
@@ -13,7 +14,7 @@ const VenueDetails = () => {
   useEffect(() => {
     const fetchVenue = async () => {
       try {
-        const response = await axios.get(`${APP_SERVER_URL}/venuesData/${id}`);
+        const response = await api.get(`${APP_SERVER_URL}/venuesData/${id}`);
         setVenue(response.data);
       } catch (error) {
         console.error('Error fetching venue:', error);
