@@ -20,6 +20,7 @@ import CreateVenue from './components/CreateVenue';
 import UpdateVenue from './components/UpdateVenue';
 import UploadVideo from './components/UploadVideo';
 import UpdateScore from './components/UpdateScore';
+import ChangeUserRole from './components/ChangeUserRole';
 import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
@@ -101,6 +102,10 @@ const App = () => {
             path="/updatevenue"
             element={<UpdateVenue />}
           />
+          <Route
+            path="/changeUserRole"
+            element={<ChangeUserRole />}
+          ></Route>
           {/* 501 page */}
           <Route
             path="/registration"

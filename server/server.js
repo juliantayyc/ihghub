@@ -31,8 +31,11 @@ app.use('/leaderboardData', leaderboardRouter);
 const venuesRouter = require('./routes/Venues');
 app.use('/venuesData', venuesRouter);
 
-const usersRouter = require('./routes/Auth');
-app.use('/auth', usersRouter);
+const authRouter = require('./routes/Auth');
+app.use('/auth', authRouter);
+
+const userRouter = require('./routes/Users');
+app.use('/users', userRouter);
 
 // Serve Client Routes
 app.get('*', (req, res) => {
