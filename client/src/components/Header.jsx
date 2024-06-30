@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { disablePageScroll, enablePageScroll } from 'scroll-lock';
 
@@ -6,13 +7,34 @@ import { navigation } from '../constants';
 import Button from './Button';
 import MenuSvg from '../assets/svg/MenuSvg';
 import { HamburgerMenu } from './design/Header';
-import { useState } from 'react';
 import Logo from '../assets/sportslogo.svg';
+import api from '../util/axiosInstance';
 
 const Header = () => {
   const pathname = useLocation();
   const navigate = useNavigate();
   const [openNavigation, setOpenNavigation] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+    const accessToken = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('accessToken='))
+      ?.split('=')[1];
+
+    if (accessToken) {
+      setIsLoggedIn(true);
+      const payload = JSON.parse(atob(accessToken.split('.')[1]));
+      setUsername(payload.username); // Extract and set the username
+      setUserRole(payload.role);
+    } else {
+      setIsLoggedIn(false);
+      setUsername('');
+      setUserRole('');
+    }
+  }, []);
 
   const toggleNavigation = () => {
     if (openNavigation) {
@@ -36,9 +58,23 @@ const Header = () => {
     handleClick(); // Close navigation if open
   };
 
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout'); // Make a request to the server to handle logout
+      document.cookie = 'accessToken=; Max-Age=0; path=/;'; // Clear the access token
+      document.cookie = 'refreshToken=; Max-Age=0; path=/;'; // Clear the refresh token
+      setIsLoggedIn(false);
+      setUsername('');
+      setUserRole('');
+      handleNavigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <div
-      className={`fixed top-0 left-0 w-full z-50  border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
+      className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
         openNavigation ? 'bg-n-8' : 'bg-n-8/90 backdrop-blur-sm'
       }`}
     >
@@ -83,18 +119,34 @@ const Header = () => {
           <HamburgerMenu />
         </nav>
 
-        <button
-          onClick={() => handleNavigate('/signup')}
-          className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
-        >
-          New account
-        </button>
-        <Button
-          onClick={() => handleNavigate('/login')}
-          className="hidden lg:flex"
-        >
-          Log in
-        </Button>
+        {isLoggedIn ? (
+          <>
+            <span className="hidden mr-8 text-n-1/50 lg:block">
+              Logged in as: {username} [{userRole}]
+            </span>
+            <Button
+              onClick={handleLogout}
+              className="hidden lg:flex"
+            >
+              Log out
+            </Button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={() => handleNavigate('/signup')}
+              className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
+            >
+              New account
+            </button>
+            <Button
+              onClick={() => handleNavigate('/login')}
+              className="hidden lg:flex"
+            >
+              Log in
+            </Button>
+          </>
+        )}
 
         <Button
           className="ml-auto lg:hidden"

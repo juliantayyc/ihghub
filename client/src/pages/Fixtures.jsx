@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Dropdown from '../components/Dropdown';
-import axios from 'axios';
+import api from '../util/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { APP_SERVER_URL } from '../constants';
 
@@ -24,7 +24,7 @@ const Fixtures = () => {
 
   const fetchFixturesData = async () => {
     try {
-      const response = await axios.get(`${APP_SERVER_URL}/fixturesData`);
+      const response = await api.get(`${APP_SERVER_URL}/fixturesData`);
       const sortedFixtures = [...response.data].sort((a, b) => {
         const dateComparison = a.date.localeCompare(b.date);
         if (dateComparison !== 0) return dateComparison;
@@ -38,7 +38,7 @@ const Fixtures = () => {
 
   const fetchVenues = async () => {
     try {
-      const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+      const response = await api.get(`${APP_SERVER_URL}/venuesData`);
       const venues = response.data.reduce((map, venue) => {
         map[venue.id] = venue.name; // Store venue names in an object for quick lookup
         return map;

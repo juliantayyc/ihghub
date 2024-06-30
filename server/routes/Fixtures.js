@@ -1,7 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { Fixtures, Venues } = require('../models');
+const verifyJWT = require('../middleware/verifyJWT');
 const { Op } = require('sequelize');
+const verifyRole = require('../middleware/verifyRole');
+
+//RBAC permissions
+const adminPermissions = ['admin'];
+const officialPermissions = ['official', 'admin'];
 
 router.get('/live', async (req, res) => {
   const now = new Date();
@@ -54,7 +60,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', verifyJWT, verifyRole(adminPermissions), async (req, res) => {
   const { venue, ...fixtureData } = req.body; // Destructure venue and the rest of fixtureData
 
   try {
@@ -82,64 +88,69 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  const id = req.params.id;
-  const {
-    sport,
-    sex,
-    team1,
-    team2,
-    score1,
-    score2,
-    venue,
-    type,
-    date,
-    startTime,
-    endTime,
-    videoId,
-    summary,
-  } = req.body;
+router.put(
+  '/:id',
+  verifyJWT,
+  verifyRole(adminPermissions),
+  async (req, res) => {
+    const id = req.params.id;
+    const {
+      sport,
+      sex,
+      team1,
+      team2,
+      score1,
+      score2,
+      venue,
+      type,
+      date,
+      startTime,
+      endTime,
+      videoId,
+      summary,
+    } = req.body;
 
-  try {
-    // Find the venue by name
-    const venueRecord = await Venues.findOne({ where: { name: venue } });
+    try {
+      // Find the venue by name
+      const venueRecord = await Venues.findOne({ where: { name: venue } });
 
-    if (!venueRecord) {
-      return res.status(400).json({
-        error: `Invalid venue name: ${venue}`,
-      });
+      if (!venueRecord) {
+        return res.status(400).json({
+          error: `Invalid venue name: ${venue}`,
+        });
+      }
+
+      const fixture = await Fixtures.findOne({ where: { id } });
+
+      if (fixture) {
+        // Update all fields from request body
+        fixture.sport = sport;
+        fixture.sex = sex;
+        fixture.team1 = team1;
+        fixture.team2 = team2;
+        fixture.score1 = score1;
+        fixture.score2 = score2;
+        fixture.venueId = venueRecord.id; // Update venueId with the validated venue's id
+        fixture.type = type;
+        fixture.date = date;
+        fixture.startTime = startTime;
+        fixture.endTime = endTime;
+        fixture.videoId = videoId;
+        fixture.summary = summary;
+
+        await fixture.save();
+        res.json({ message: 'Fixture updated successfully', fixture });
+      } else {
+        res.status(404).json({ message: 'Fixture not found' });
+      }
+    } catch (error) {
+      console.error('Error updating fixture:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while updating the fixture' });
     }
-
-    const fixture = await Fixtures.findOne({ where: { id } });
-
-    if (fixture) {
-      // Update all fields from request body
-      fixture.sport = sport;
-      fixture.sex = sex;
-      fixture.team1 = team1;
-      fixture.team2 = team2;
-      fixture.score1 = score1;
-      fixture.score2 = score2;
-      fixture.venueId = venueRecord.id; // Update venueId with the validated venue's id
-      fixture.type = type;
-      fixture.date = date;
-      fixture.startTime = startTime;
-      fixture.endTime = endTime;
-      fixture.videoId = videoId;
-      fixture.summary = summary;
-
-      await fixture.save();
-      res.json({ message: 'Fixture updated successfully', fixture });
-    } else {
-      res.status(404).json({ message: 'Fixture not found' });
-    }
-  } catch (error) {
-    console.error('Error updating fixture:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while updating the fixture' });
   }
-});
+);
 
 router.get('/search', async (req, res) => {
   const { sport, sex, team1, team2, type, date } = req.query;
@@ -199,59 +210,69 @@ router.get('/getfixture', async (req, res) => {
   }
 });
 
-router.put('/:id/video', async (req, res) => {
-  const id = req.params.id;
-  const { videoId, summary } = req.body;
+router.put(
+  '/:id/video',
+  verifyJWT,
+  verifyRole(officialPermissions),
+  async (req, res) => {
+    const id = req.params.id;
+    const { videoId, summary } = req.body;
 
-  try {
-    const fixture = await Fixtures.findOne({ where: { id } });
+    try {
+      const fixture = await Fixtures.findOne({ where: { id } });
 
-    if (fixture) {
-      fixture.videoId = videoId;
-      fixture.summary = summary;
+      if (fixture) {
+        fixture.videoId = videoId;
+        fixture.summary = summary;
 
-      await fixture.save();
-      res.json({
-        message: 'Video ID and summary updated successfully',
-        fixture,
+        await fixture.save();
+        res.json({
+          message: 'Video ID and summary updated successfully',
+          fixture,
+        });
+      } else {
+        res.status(404).json({ message: 'Fixture not found' });
+      }
+    } catch (error) {
+      console.error('Error updating video ID, subtitles, and summary:', error);
+      res.status(500).json({
+        error:
+          'An error occurred while updating the video ID, subtitles, and summary',
       });
-    } else {
-      res.status(404).json({ message: 'Fixture not found' });
     }
-  } catch (error) {
-    console.error('Error updating video ID, subtitles, and summary:', error);
-    res.status(500).json({
-      error:
-        'An error occurred while updating the video ID, subtitles, and summary',
-    });
   }
-});
+);
 
-router.put('/:id/score', async (req, res) => {
-  const id = req.params.id;
-  const { score1, score2 } = req.body;
+router.put(
+  '/:id/score',
+  verifyJWT,
+  verifyRole(officialPermissions),
+  async (req, res) => {
+    const id = req.params.id;
+    const { score1, score2 } = req.body;
 
-  try {
-    const fixture = await Fixtures.findOne({ where: { id } });
+    try {
+      const fixture = await Fixtures.findOne({ where: { id } });
 
-    if (fixture) {
-      fixture.score1 = score1;
-      fixture.score2 = score2;
+      if (fixture) {
+        fixture.score1 = score1;
+        fixture.score2 = score2;
 
-      await fixture.save();
-      res.json({
-        message: 'Scores updated successfully',
-        fixture,
+        await fixture.save();
+        res.json({
+          message: 'Scores updated successfully',
+          fixture,
+        });
+      } else {
+        res.status(404).json({ message: 'Fixture not found' });
+      }
+    } catch (error) {
+      console.error('Error updating scores:', error);
+      res.status(500).json({
+        error: 'An error occurred while updating the scores',
       });
-    } else {
-      res.status(404).json({ message: 'Fixture not found' });
     }
-  } catch (error) {
-    console.error('Error updating scores:', error);
-    res.status(500).json({
-      error: 'An error occurred while updating the scores',
-    });
   }
-});
+);
 
 module.exports = router;

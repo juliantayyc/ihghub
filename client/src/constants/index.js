@@ -39,6 +39,10 @@ import {
 export const APP_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
 export const YOUTUBE_API_KEY = import.meta.env.VITE_APP_YOUTUBE_API_KEY;
 
+//RBAC permissions
+export const adminPermissions = ['admin'];
+export const officialPermissions = ['official', 'admin'];
+
 export const navigation = [
   {
     id: '0',

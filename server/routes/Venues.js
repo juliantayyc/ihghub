@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Venues } = require('../models');
+const verifyJWT = require('../middleware/verifyJWT');
 
 router.get('/', async (req, res) => {
   await Venues.findAll()
@@ -49,7 +50,7 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-router.post('/', async (req, res) => {
+router.post('/', verifyJWT, async (req, res) => {
   const venues = req.body;
   await Venues.create(venues)
     .then((result) => {
@@ -64,7 +65,7 @@ router.post('/', async (req, res) => {
     });
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyJWT, async (req, res) => {
   const id = req.params.id;
   const { name, location, latitude, longitude } = req.body;
 

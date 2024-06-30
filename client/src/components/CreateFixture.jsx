@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -81,7 +82,7 @@ const CreateFixture = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+        const response = await api.get(`${APP_SERVER_URL}/venuesData`);
         setVenues(response.data);
       } catch (error) {
         console.error('Error fetching venues:', error);
@@ -147,7 +148,7 @@ const CreateFixture = () => {
         venue: selectedVenue,
       };
 
-      await axios.post(`${APP_SERVER_URL}/fixturesData`, fixtureData);
+      await api.post(`${APP_SERVER_URL}/fixturesData`, fixtureData);
       setMessage('Fixture created successfully!');
     } catch (error) {
       console.error('Error creating fixture:', error);

@@ -1,43 +1,48 @@
 const express = require('express');
 const router = express.Router();
 const { Users } = require('../models');
-const bcrypt = require('bcrypt');
+const verifyJWT = require('../middleware/verifyJWT');
+const verifyRole = require('../middleware/verifyRole');
 
-router.post('/', async (req, res) => {
-  const { username, password, email } = req.body;
+const adminPermissions = ['admin'];
 
-  // check if user exists
-  const user = await Users.findOne({ where: { username: username } });
-  if (user) {
-    return res.json({ error: 'Username already exists' });
+// Get all users
+router.get(
+  '/all',
+  verifyJWT,
+  verifyRole(adminPermissions),
+  async (req, res) => {
+    try {
+      const users = await Users.findAll();
+      res.json(users);
+    } catch (err) {
+      res.status(400).json(err);
+    }
   }
+);
 
-  // hash pw and create user
-  bcrypt.hash(password, 10).then((hash) => {
-    Users.create({
-      username: username,
-      password: hash,
-      email: email,
-    })
-      .then(() => {
-        res.json('SUCCESS');
-      })
-      .catch((err) => {
-        res.json({ error: 'Error creating user' });
-      });
-  });
-});
+// Update user role
+router.put(
+  '/role/:id',
+  verifyJWT,
+  verifyRole(adminPermissions),
+  async (req, res) => {
+    const { id } = req.params;
+    const { role } = req.body;
 
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await Users.findOne({ where: { username: username } });
-  if (!user) res.json({ error: "User Doesn't Exist" });
-  else
-    bcrypt.compare(password, user.password).then((match) => {
-      if (!match)
-        res.json({ error: 'Wrong Username and Password Combination' });
-      res.json('Logged In');
-    });
-});
+    try {
+      const user = await Users.findByPk(id);
+      if (user) {
+        user.role = role;
+        await user.save();
+        res.json({ message: 'User role updated successfully' });
+      } else {
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  }
+);
 
 module.exports = router;

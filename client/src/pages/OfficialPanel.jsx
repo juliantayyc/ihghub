@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Forbidden from '../components/Forbidden';
 
 const styles = {
   container: {
@@ -8,7 +9,7 @@ const styles = {
     alignItems: 'center',
     padding: '20px',
     textAlign: 'center',
-    fontSize: '1.5rem', // Larger font size for the entire container
+    fontSize: '1.5rem',
   },
   cardContainer: {
     display: 'flex',
@@ -16,7 +17,7 @@ const styles = {
     gap: '20px',
     marginTop: '20px',
     flexWrap: 'wrap',
-    maxWidth: '800px', // Optional: Limit width to prevent too wide layout
+    maxWidth: '800px',
   },
   card: {
     padding: '20px',
@@ -31,18 +32,31 @@ const styles = {
     width: '100%',
   },
   cardTitle: {
-    fontSize: '1.2rem', // Larger font size for card titles
+    fontSize: '1.2rem',
     fontWeight: 'bold',
     marginBottom: '10px',
   },
   cardDescription: {
-    fontSize: '1rem', // Adjust font size for card descriptions
-    color: '#555', // Adjust color if needed
+    fontSize: '1rem',
+    color: '#555',
   },
 };
 
 const OfficialPanel = () => {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+    const accessToken = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('accessToken='))
+      ?.split('=')[1];
+
+    if (accessToken) {
+      const payload = JSON.parse(atob(accessToken.split('.')[1]));
+      setUserRole(payload.role);
+    }
+  }, []);
 
   const handleUploadVideoClick = () => {
     navigate('/uploadvideo');
@@ -55,6 +69,10 @@ const OfficialPanel = () => {
   const handleRegistrationClick = () => {
     navigate('/registration');
   };
+
+  if (!userRole || (userRole !== 'official' && userRole !== 'admin')) {
+    return <Forbidden />;
+  }
 
   return (
     <div style={styles.container}>

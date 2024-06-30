@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -96,7 +97,7 @@ const UpdateFixture = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+        const response = await api.get(`${APP_SERVER_URL}/venuesData`);
         setVenues(response.data);
       } catch (error) {
         console.error('Error fetching venues:', error);
@@ -119,7 +120,7 @@ const UpdateFixture = () => {
         endTime: currentEndTime,
       };
 
-      const response = await axios.get(
+      const response = await api.get(
         `${APP_SERVER_URL}/fixturesData/getfixture`,
         {
           params: filter,
@@ -129,7 +130,7 @@ const UpdateFixture = () => {
       const game = response.data;
 
       if (game) {
-        await axios.put(`${APP_SERVER_URL}/fixturesData/${game.id}`, {
+        await api.put(`${APP_SERVER_URL}/fixturesData/${game.id}`, {
           sport: selectedNewSport,
           team1: selectedNewTeam1,
           team2: selectedNewTeam2,

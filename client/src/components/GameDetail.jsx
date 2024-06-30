@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { YOUTUBE_API_KEY } from '../constants';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -85,7 +86,7 @@ const fetchLiveStream = async (sport) => {
 
 const fetchVenue = async (venueId) => {
   try {
-    const response = await axios.get(`${APP_SERVER_URL}/venuesData/${venueId}`);
+    const response = await api.get(`${APP_SERVER_URL}/venuesData/${venueId}`);
     return response.data.name;
   } catch (error) {
     console.error('Error fetching venue:', error);

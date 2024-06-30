@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -88,17 +89,14 @@ const UpdateScore = () => {
         date,
       };
 
-      const response = await axios.get(
-        `${APP_SERVER_URL}/fixturesData/search`,
-        {
-          params: filter,
-        }
-      );
+      const response = await api.get(`${APP_SERVER_URL}/fixturesData/search`, {
+        params: filter,
+      });
 
       const game = response.data;
 
       if (game) {
-        await axios.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
+        await api.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
           score1,
           score2,
         });

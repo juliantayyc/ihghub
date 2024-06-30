@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { APP_SERVER_URL } from '../constants';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -55,7 +56,7 @@ const UpdateVenue = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
+        const response = await api.get(`${APP_SERVER_URL}/venuesData`);
         setVenues(response.data);
       } catch (error) {
         console.error('Error fetching venues:', error);
@@ -70,17 +71,14 @@ const UpdateVenue = () => {
         name: selectedCurrentName,
       };
 
-      const response = await axios.get(
-        `${APP_SERVER_URL}/venuesData/getvenue`,
-        {
-          params: filter,
-        }
-      );
+      const response = await api.get(`${APP_SERVER_URL}/venuesData/getvenue`, {
+        params: filter,
+      });
 
       const venue = response.data;
 
       if (venue) {
-        await axios.put(`${APP_SERVER_URL}/venuesData/${venue.id}`, {
+        await api.put(`${APP_SERVER_URL}/venuesData/${venue.id}`, {
           name: newName,
           location: newLocation,
           latitude: newLatitude,
