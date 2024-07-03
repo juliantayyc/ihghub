@@ -37,8 +37,8 @@ import {
 } from '../assets';
 
 export const APP_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
-export const YOUTUBE_API_KEY = 'AIzaSyD2kNNuqp8fvaGO_pdcCloW7rXO-0RPxrQ';
-export const GOOGLE_MAPS_API_KEY = 'AIzaSyAFp7t5tUn3FwoQyljikIwCCQGq1ciV-3Q';
+export const YOUTUBE_API_KEY = import.meta.env.VITE_APP_YOUTUBE_API_KEY;
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
 
 //RBAC permissions
 export const adminPermissions = ['admin'];
