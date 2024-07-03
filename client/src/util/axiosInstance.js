@@ -6,51 +6,51 @@ const api = axios.create({
   withCredentials: true, // This ensures cookies are sent with requests
 });
 
-api.interceptors.request.use(async (config) => {
-  const accessToken = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith('accessToken='))
-    ?.split('=')[1];
+// api.interceptors.request.use(async (config) => {
+//   const accessToken = document.cookie
+//     .split('; ')
+//     .find((row) => row.startsWith('accessToken='))
+//     ?.split('=')[1];
 
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  } else {
-    const { data } = await axios.post(
-      `${APP_SERVER_URL}/auth/refresh-token`,
-      {},
-      { withCredentials: true }
-    );
-    if (data.accessToken) {
-      document.cookie = `accessToken=${data.accessToken}; SameSite=Lax;`;
-      axios.defaults.headers.common['Authorization'] =
-        `Bearer ${data.accessToken}`;
-      return api(originalRequest);
-    }
-  }
+//   if (accessToken) {
+//     config.headers.Authorization = `Bearer ${accessToken}`;
+//   } else {
+//     const { data } = await axios.post(
+//       `${APP_SERVER_URL}/auth/refresh-token`,
+//       {},
+//       { withCredentials: true }
+//     );
+//     if (data.accessToken) {
+//       document.cookie = `accessToken=${data.accessToken}; SameSite=Lax;`;
+//       axios.defaults.headers.common['Authorization'] =
+//         `Bearer ${data.accessToken}`;
+//       return api(originalRequest);
+//     }
+//   }
 
-  return config;
-});
+//   return config;
+// });
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const { data } = await axios.post(
-        `${APP_SERVER_URL}/auth/refresh-token`,
-        {},
-        { withCredentials: true }
-      );
-      if (data.accessToken) {
-        document.cookie = `accessToken=${data.accessToken}; SameSite=Lax;`;
-        axios.defaults.headers.common['Authorization'] =
-          `Bearer ${data.accessToken}`;
-        return api(originalRequest);
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const { data } = await axios.post(
+//         `${APP_SERVER_URL}/auth/refresh-token`,
+//         {},
+//         { withCredentials: true }
+//       );
+//       if (data.accessToken) {
+//         document.cookie = `accessToken=${data.accessToken}; SameSite=Lax;`;
+//         axios.defaults.headers.common['Authorization'] =
+//           `Bearer ${data.accessToken}`;
+//         return api(originalRequest);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;

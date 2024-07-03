@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Forbidden from '../components/Forbidden';
+import api from '../util/axiosInstance';
 
 const styles = {
   container: {
@@ -47,15 +48,34 @@ const OfficialPanel = () => {
   const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    const accessToken = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('accessToken='))
-      ?.split('=')[1];
+    const fetchUserRole = async () => {
+      try {
+        const accessToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('accessToken='))
+          ?.split('=')[1];
 
-    if (accessToken) {
-      const payload = JSON.parse(atob(accessToken.split('.')[1]));
-      setUserRole(payload.role);
-    }
+        if (accessToken) {
+          const payload = JSON.parse(atob(accessToken.split('.')[1]));
+          setUserRole(payload.role);
+        } else {
+          // Access token is expired, attempt to refresh
+          const response = await api.post('/auth/refresh-token', {});
+          const { accessToken: newAccessToken } = response.data;
+
+          // Update the access token in cookies and state
+          document.cookie = `accessToken=${newAccessToken}; SameSite=Lax;`;
+          const newPayload = JSON.parse(atob(newAccessToken.split('.')[1]));
+          setUserRole(newPayload.role);
+        }
+      } catch (error) {
+        // Handle errors or unauthorized state
+        console.log('Error fetching user role:', error);
+        navigate('/login'); // Redirect to login page or handle as needed
+      }
+    };
+
+    fetchUserRole();
   }, []);
 
   const handleUploadVideoClick = () => {
