@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Forbidden from '../components/Forbidden';
 import ChangeUserRole from '../components/ChangeUserRole';
+import api from '../util/axiosInstance';
+import { APP_SERVER_URL } from '../constants';
 
 const styles = {
   container: {
@@ -48,15 +50,38 @@ const AdminPanel = () => {
   const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    const accessToken = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('accessToken='))
-      ?.split('=')[1];
+    const fetchUserRole = async () => {
+      try {
+        const accessToken = document.cookie
+          .split('; ')
+          .find((row) => row.startsWith('accessToken='))
+          ?.split('=')[1];
 
-    if (accessToken) {
-      const payload = JSON.parse(atob(accessToken.split('.')[1]));
-      setUserRole(payload.role);
-    }
+        if (accessToken) {
+          const payload = JSON.parse(atob(accessToken.split('.')[1]));
+          setUserRole(payload.role);
+        } else {
+          console.log('No access token found');
+          // Access token is expired, attempt to refresh
+          const response = await api.post(
+            `${APP_SERVER_URL}/auth/refresh-token`,
+            {}
+          );
+          const { accessToken: newAccessToken } = response.data;
+
+          // Update the access token in cookies and state
+          document.cookie = `accessToken=${newAccessToken}; SameSite=Lax;`;
+          const newPayload = JSON.parse(atob(newAccessToken.split('.')[1]));
+          setUserRole(newPayload.role);
+        }
+      } catch (error) {
+        // Handle errors or unauthorized state
+        console.log('Error fetching user role:', error);
+        navigate('/login'); // Redirect to login page or handle as needed
+      }
+    };
+
+    fetchUserRole();
   }, []);
 
   const handleCreateFixtureClick = () => {

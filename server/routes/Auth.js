@@ -94,14 +94,14 @@ router.post('/login', async (req, res) => {
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+    sameSite: process.env.NODE_ENV === 'Lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 86400000, // 1 day
   });
 
   res.cookie('accessToken', accessToken, {
     httpOnly: false,
-    sameSite: process.env.NODE_ENV === 'production' ? 'Lax' : 'Lax',
+    sameSite: process.env.NODE_ENV === 'Lax',
     secure: process.env.NODE_ENV === 'production',
     maxAge: 300000, // 5 minutes
   });
@@ -137,7 +137,7 @@ router.post('/refresh-token', async (req, res) => {
 
       res.cookie('accessToken', accessToken, {
         httpOnly: false,
-        sameSite: process.env.NODE_ENV === 'production' ? 'Lax' : 'Lax',
+        sameSite: process.env.NODE_ENV === 'Lax',
         secure: process.env.NODE_ENV === 'production',
         maxAge: 300000, // 5 minutes
       });
@@ -151,11 +151,11 @@ router.post('/logout', async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return res.status(400).send('No refresh token found');
+    console.log('No refresh token found');
+  } else {
+    // Delete the refresh token from the database
+    await RefreshTokens.destroy({ where: { refreshToken } });
   }
-
-  // Delete the refresh token from the database
-  await RefreshTokens.destroy({ where: { refreshToken } });
 
   // Clear the cookies
   res.cookie('refreshToken', '', {
