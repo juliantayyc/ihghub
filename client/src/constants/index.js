@@ -37,8 +37,10 @@ import {
 } from '../assets';
 
 export const APP_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+export const WEATHER_API_URL = import.meta.env.VITE_APP_WEATHER_API_URL;
 export const YOUTUBE_API_KEY = 'AIzaSyD2kNNuqp8fvaGO_pdcCloW7rXO-0RPxrQ';
 export const GOOGLE_MAPS_API_KEY = 'AIzaSyAFp7t5tUn3FwoQyljikIwCCQGq1ciV-3Q';
+export const WEATHER_API_KEY = 'da9e2be50feecb5d36604a82c76a1612';
 
 //RBAC permissions
 export const adminPermissions = ['admin'];
