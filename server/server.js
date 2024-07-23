@@ -25,8 +25,8 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 const fixturesRouter = require('./routes/Fixtures');
 app.use('/fixturesData', fixturesRouter);
 
-const leaderboardRouter = require('./routes/Leaderboard');
-app.use('/leaderboardData', leaderboardRouter);
+const placingsRouter = require('./routes/Placings');
+app.use('/placingsData', placingsRouter);
 
 const venuesRouter = require('./routes/Venues');
 app.use('/venuesData', venuesRouter);

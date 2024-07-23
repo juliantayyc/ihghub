@@ -12,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       team1: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       team2: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       score1: {
         type: DataTypes.INTEGER,

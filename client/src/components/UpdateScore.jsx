@@ -77,6 +77,8 @@ const UpdateScore = () => {
   const [score2, setScore2] = useState('');
   const [message, setMessage] = useState('');
   const [filteredFixtures, setFilteredFixtures] = useState([]);
+  const [gameEnd, setGameEnd] = useState(false);
+  const [finalWinner, setFinalWinner] = useState('');
 
   const filterFixtures = async () => {
     try {
@@ -100,6 +102,11 @@ const UpdateScore = () => {
           score1,
           score2,
         });
+
+        if (gameEnd) {
+          await handleGameEndLogic(game);
+        }
+
         setMessage('Scores updated successfully!');
       } else {
         setMessage('No game found with the specified details');
@@ -108,6 +115,104 @@ const UpdateScore = () => {
       console.error('Error updating scores:', error);
       setMessage('Error updating scores');
     }
+  };
+
+  const handleGameEndLogic = async (game) => {
+    try {
+      // Get the existing placing entry for the sport and sex
+      const placingsResponse = await api.get(
+        `${APP_SERVER_URL}/placingsData/search`,
+        {
+          params: { sport: selectedSport, sex: selectedSex },
+        }
+      );
+
+      const placingsData = placingsResponse.data;
+
+      if (!placingsData) {
+        setMessage('Placing entry not found.');
+        return;
+      }
+
+      const finalLoser =
+        finalWinner === selectedTeam1 ? selectedTeam2 : selectedTeam1;
+
+      // Update final game winner and loser in placings
+      await api.put(`${APP_SERVER_URL}/placingsData/${placingsData.id}`, {
+        first: finalWinner,
+        second: finalLoser,
+      });
+
+      // Get semi-final games
+      const semiFinalGames = await getSemiFinalGames(
+        selectedSport,
+        selectedSex
+      );
+
+      if (semiFinalGames.length !== 2) {
+        setMessage('Could not find exactly two semi-final games.');
+        return;
+      }
+
+      const [semiFinalGame1, semiFinalGame2] = semiFinalGames;
+
+      const semiFinalLosers = [
+        semiFinalGame1.team1 === finalWinner ||
+        semiFinalGame1.team1 === finalLoser
+          ? semiFinalGame1.team2
+          : semiFinalGame1.team1,
+        semiFinalGame2.team1 === finalWinner ||
+        semiFinalGame2.team1 === finalLoser
+          ? semiFinalGame2.team2
+          : semiFinalGame2.team1,
+      ];
+
+      // Update semi-final losers in placings
+      await api.put(`${APP_SERVER_URL}/placingsData/${placingsData.id}`, {
+        third: semiFinalLosers[0],
+        fourth: semiFinalLosers[1],
+      });
+
+      // Get all teams in this sport and sex
+      const allTeams = ['TH', 'EH', 'KR', 'KE', 'RH', 'SH'];
+
+      // Determine the last two teams that did not get points
+      const topFourTeams = [
+        finalWinner,
+        finalWinner === selectedTeam1 ? selectedTeam2 : selectedTeam1,
+        ...semiFinalLosers,
+      ];
+      const lastTwoTeams = allTeams.filter(
+        (team) => !topFourTeams.includes(team)
+      );
+
+      if (lastTwoTeams.length !== 2) {
+        setMessage('Could not determine the last two teams.');
+        return;
+      }
+
+      // Update the last two teams in placings
+      await api.put(`${APP_SERVER_URL}/placingsData/${placingsData.id}`, {
+        fifth: lastTwoTeams[0],
+        sixth: lastTwoTeams[1],
+      });
+
+      setMessage('Placings updated successfully!');
+    } catch (error) {
+      console.error('Error updating placings:', error);
+      setMessage('Error updating placings');
+    }
+  };
+
+  // const updateLeaderboard = async (hall, sex, score) => {
+  //   await api.post(`${APP_SERVER_URL}/leaderboardData`, { hall, sex, score });
+  // };
+
+  const getSemiFinalGames = async (sport, sex) => {
+    const response = await api.get(`${APP_SERVER_URL}/fixturesData/findSemis`, {
+      params: { sport, sex, type: 'Semis' },
+    });
+    return response.data;
   };
 
   const handleDateChange = (selectedDate) => {
@@ -253,6 +358,24 @@ const UpdateScore = () => {
           value={score2}
           onChange={(e) => setScore2(e.target.value)}
         />
+        <label>
+          <input
+            type="checkbox"
+            checked={gameEnd}
+            onChange={(e) => setGameEnd(e.target.checked)}
+          />{' '}
+          Game End
+        </label>
+        <select
+          style={styles.input}
+          value={finalWinner}
+          name="finalWinner"
+          onChange={(e) => setFinalWinner(e.target.value)}
+        >
+          <option value="">Select Final Winner</option>
+          <option value={selectedTeam1}>{selectedTeam1}</option>
+          <option value={selectedTeam2}>{selectedTeam2}</option>
+        </select>
         <button
           type="submit"
           style={styles.button}
