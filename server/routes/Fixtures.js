@@ -60,38 +60,42 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', verifyJWT, verifyRole(adminPermissions), async (req, res) => {
-  const { venue, ...fixtureData } = req.body; // Destructure venue and the rest of fixtureData
+router.post(
+  '/',
+  //verifyJWT, verifyRole(adminPermissions),
+  async (req, res) => {
+    const { venue, ...fixtureData } = req.body; // Destructure venue and the rest of fixtureData
 
-  try {
-    // Find the venue by name
-    const venueRecord = await Venues.findOne({ where: { name: venue } });
+    try {
+      // Find the venue by name
+      const venueRecord = await Venues.findOne({ where: { name: venue } });
 
-    if (!venueRecord) {
-      return res.status(400).json({
-        error: `Invalid venue name.`,
-      });
-    }
+      if (!venueRecord) {
+        return res.status(400).json({
+          error: `Invalid venue name.`,
+        });
+      }
 
-    // Add the venueId to fixtureData
-    fixtureData.venueId = venueRecord.id;
+      // Add the venueId to fixtureData
+      fixtureData.venueId = venueRecord.id;
 
-    // Create the new fixture with the venueId
-    const newFixture = await Fixtures.create(fixtureData);
-    res.json(newFixture);
-  } catch (err) {
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      res.status(400).json({ error: 'Duplicate fixture entry' });
-    } else {
-      res.status(400).json(err);
+      // Create the new fixture with the venueId
+      const newFixture = await Fixtures.create(fixtureData);
+      res.json(newFixture);
+    } catch (err) {
+      if (err.name === 'SequelizeUniqueConstraintError') {
+        res.status(400).json({ error: 'Duplicate fixture entry' });
+      } else {
+        res.status(400).json(err);
+      }
     }
   }
-});
+);
 
 router.put(
   '/:id',
-  verifyJWT,
-  verifyRole(adminPermissions),
+  //verifyJWT,
+  //verifyRole(adminPermissions),
   async (req, res) => {
     const id = req.params.id;
     const {
@@ -179,6 +183,30 @@ router.get('/search', async (req, res) => {
   }
 });
 
+router.get('/findSemis', async (req, res) => {
+  const { sport, sex, type } = req.query;
+
+  try {
+    const fixtures = await Fixtures.findAll({
+      where: {
+        sport,
+        sex,
+        type,
+      },
+    });
+
+    if (fixtures.length > 0) {
+      res.json(fixtures);
+    } else {
+      res.status(404).json({ message: 'Games not found' });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while searching for the games' });
+  }
+});
+
 router.get('/getfixture', async (req, res) => {
   const { sport, sex, team1, team2, type, venueId, date, startTime, endTime } =
     req.query;
@@ -245,8 +273,8 @@ router.put(
 
 router.put(
   '/:id/score',
-  verifyJWT,
-  verifyRole(officialPermissions),
+  //verifyJWT,
+  //verifyRole(officialPermissions),
   async (req, res) => {
     const id = req.params.id;
     const { score1, score2 } = req.body;

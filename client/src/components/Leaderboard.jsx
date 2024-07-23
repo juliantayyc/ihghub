@@ -15,15 +15,23 @@ const Leaderboard = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await axios.get(
-        `${APP_SERVER_URL}/leaderboardData/totals`
-      );
+      const response = await axios.get(`${APP_SERVER_URL}/placingsData/totals`);
       console.log('Fetched leaderboard data:', response.data); // Log the fetched data
-      const updatedLeaderboard = halls.map((hall) => ({
-        ...hall,
-        scoreM: response.data[hall.name]?.M || 0,
-        scoreF: response.data[hall.name]?.F || 0,
-      }));
+
+      // Map the fetched data to the halls array, including scores and images
+      const updatedLeaderboard = halls.map((hall) => {
+        // Find the corresponding data from the API response
+        const hallData = Object.entries(response.data).find(([key]) => {
+          return key === hall.name;
+        });
+
+        // Return the hall object with scores and image
+        return {
+          ...hall,
+          scoreM: hallData ? hallData[1].M || 0 : 0,
+          scoreF: hallData ? hallData[1].F || 0 : 0,
+        };
+      });
       console.log('Updated leaderboard:', updatedLeaderboard); // Log the updated leaderboard
       setLeaderboard(updatedLeaderboard);
     } catch (error) {
