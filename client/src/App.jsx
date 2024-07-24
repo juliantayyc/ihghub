@@ -22,6 +22,7 @@ import UploadVideo from './components/UploadVideo';
 import UpdateScore from './components/UpdateScore';
 import ChangeUserRole from './components/ChangeUserRole';
 import { Route, Routes } from 'react-router-dom';
+import EmailVerified from './pages/EmailVerified';
 
 const App = () => {
   return (
@@ -53,6 +54,10 @@ const App = () => {
           <Route
             path="/signup"
             element={<Signup />}
+          />
+          <Route
+            path="/email-verified"
+            element={<EmailVerified />}
           />
           <Route
             path="/venues/:id"

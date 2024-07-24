@@ -35,18 +35,19 @@ function Signup() {
       .then((response) => {
         if (response.data.error) {
           setServerError(response.data.error);
-          setSuccessMessage(''); // Clear any previous success message
+          setSuccessMessage('');
         } else {
           setServerError('');
-          setSuccessMessage('Signed up successfully!');
+          setSuccessMessage(
+            'Signed up successfully! Please check your email for verification.'
+          );
           resetForm();
-          // Redirect the user to the home page
           setTimeout(() => navigate('/'), 2000); // Redirect after 2 seconds
         }
       })
       .catch((error) => {
         setServerError('An unexpected error occurred.');
-        setSuccessMessage(''); // Clear any previous success message
+        setSuccessMessage('');
         console.error(error);
       })
       .finally(() => {
@@ -74,7 +75,6 @@ function Signup() {
                 {successMessage}
               </div>
             )}
-
             <div className="mb-6">
               <label
                 className="block text-gray-600 mb-1"
