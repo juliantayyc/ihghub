@@ -4,8 +4,6 @@ require('dotenv').config();
 
 const refreshAccessToken = async (refreshToken) => {
   try {
-    // Implement your logic to refresh the access token here
-    // Example: Make a query to your database to refresh the token
     const storedToken = await RefreshTokens.findOne({
       where: { refreshToken },
     });
@@ -32,21 +30,20 @@ const refreshAccessToken = async (refreshToken) => {
 
 const verifyJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.cookies.accessToken;
 
   if (!authHeader) {
     return res.status(401).send('No Auth Header');
   }
 
-  const token = authHeader.split(' ')[1];
+  if (!refreshToken) {
+    return res.status(401).send('No refresh token');
+  }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
-
-    // Check if token needs to be refreshed (e.g., nearing expiration)
-    const nowInSeconds = Math.floor(Date.now() / 1000);
-    if (decoded.exp - nowInSeconds < 60) {
-      // If token is nearing expiration, refresh it
-      const newAccessToken = await refreshAccessToken(req.cookies.refreshToken);
+  if (!accessToken) {
+    try {
+      const newAccessToken = await refreshAccessToken(refreshToken);
       req.user = jwt.decode(newAccessToken);
       res.cookie('accessToken', newAccessToken, {
         httpOnly: false,
@@ -54,15 +51,34 @@ const verifyJWT = async (req, res, next) => {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 300000, // 5 minutes
       });
-    } else {
-      // Token is valid, proceed with the decoded user information
-      req.user = decoded;
+      return next();
+    } catch (error) {
+      return res.status(401).send('Unable to refresh access token');
     }
+  }
 
+  try {
+    const decoded = jwt.verify(
+      accessToken,
+      process.env.JWT_ACCESS_TOKEN_SECRET
+    );
+    req.user = decoded;
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).send('Token expired');
+      try {
+        const newAccessToken = await refreshAccessToken(refreshToken);
+        req.user = jwt.decode(newAccessToken);
+        res.cookie('accessToken', newAccessToken, {
+          httpOnly: false,
+          sameSite: process.env.NODE_ENV === 'Lax',
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 300000, // 5 minutes
+        });
+        next();
+      } catch (refreshError) {
+        return res.status(401).send('Unable to refresh access token');
+      }
     } else {
       return res.status(401).send('Invalid token');
     }

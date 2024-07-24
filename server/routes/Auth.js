@@ -3,6 +3,7 @@ const router = express.Router();
 const { Users, RefreshTokens } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sendVerificationEmail } = require('../middleware/sendEmail');
 require('dotenv').config();
 
 const createTokens = async (user, generateRefreshToken = false) => {
@@ -54,25 +55,35 @@ const createTokens = async (user, generateRefreshToken = false) => {
 router.post('/signup', async (req, res) => {
   const { username, password, email } = req.body;
 
-  // check if user exists
+  // Check if user exists
   const user = await Users.findOne({ where: { username: username } });
   if (user) {
     return res.json({ error: 'Username already exists' });
   }
 
-  // hash pw and create user
-  bcrypt.hash(password, 10).then((hash) => {
-    Users.create({
-      username: username,
-      password: hash,
-      email: email,
-    })
-      .then(() => {
-        res.json('SUCCESS');
-      })
-      .catch((err) => {
-        res.json({ error: 'Error creating user' });
+  // Hash password and create user
+  bcrypt.hash(password, 10).then(async (hash) => {
+    try {
+      const newUser = await Users.create({
+        username: username,
+        password: hash,
+        email: email,
       });
+
+      // Generate verification token
+      const verificationToken = jwt.sign(
+        { username: newUser.username, email: newUser.email },
+        process.env.JWT_VERIFICATION_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      // Send verification email
+      sendVerificationEmail(newUser.email, verificationToken);
+
+      res.json('SUCCESS');
+    } catch (err) {
+      res.json({ error: 'Error creating user' });
+    }
   });
 });
 
@@ -172,6 +183,33 @@ router.post('/logout', async (req, res) => {
   });
 
   res.send('Logged out successfully');
+});
+
+router.get('/verify-email', async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).send('Verification token is missing');
+  }
+
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_VERIFICATION_SECRET);
+
+    // Find the user by email
+    const user = await Users.findOne({ where: { username: decoded.username } });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Update the user's verification status
+    await user.update({ isVerified: true });
+
+    res.send('Email verified successfully');
+  } catch (error) {
+    console.error('Error verifying email:', error);
+    res.status(500).send('Internal server error');
+  }
 });
 
 module.exports = router;

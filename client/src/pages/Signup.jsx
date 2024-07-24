@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { APP_SERVER_URL } from '../constants';
 
 function Signup() {
   const [serverError, setServerError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const initialValues = {
     username: '',
@@ -32,15 +35,19 @@ function Signup() {
       .then((response) => {
         if (response.data.error) {
           setServerError(response.data.error);
+          setSuccessMessage('');
         } else {
-          console.log(response.data);
           setServerError('');
+          setSuccessMessage(
+            'Signed up successfully! Please check your email for verification.'
+          );
           resetForm();
-          // Optionally, redirect the user or show a success message
+          setTimeout(() => navigate('/'), 2000); // Redirect after 2 seconds
         }
       })
       .catch((error) => {
         setServerError('An unexpected error occurred.');
+        setSuccessMessage('');
         console.error(error);
       })
       .finally(() => {
@@ -63,7 +70,11 @@ function Signup() {
             {serverError && (
               <div className="text-red-500 text-center mb-4">{serverError}</div>
             )}
-
+            {successMessage && (
+              <div className="text-green-500 text-center mb-4">
+                {successMessage}
+              </div>
+            )}
             <div className="mb-6">
               <label
                 className="block text-gray-600 mb-1"
@@ -101,7 +112,7 @@ function Signup() {
               />
               <ErrorMessage
                 name="email"
-                component="email"
+                component="div"
                 className="text-red-500 text-sm mt-1"
               />
             </div>
