@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('M', 'F', 'Mixed'),
         allowNull: false,
       },
+      type: {
+        type: DataTypes.ENUM('Carnival', 'Grouping'),
+        allowNull: false,
+      },
       first: {
         type: DataTypes.STRING,
         allowNull: true,
