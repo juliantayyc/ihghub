@@ -6,6 +6,7 @@ import { APP_SERVER_URL } from '../constants';
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState(null);
   const navigate = useNavigate();
 
   const login = () => {
@@ -13,13 +14,15 @@ function Login() {
     axios
       .post(`${APP_SERVER_URL}/auth/login`, data)
       .then((response) => {
-        // Assuming the response contains a success status
         if (response.status === 200) {
-          // Redirect to the home page
-          navigate('/');
+          setLoginStatus('success');
+          setTimeout(() => {
+            navigate('/');
+          }, 2000); // Redirect to home page after 2 seconds
         }
       })
       .catch((error) => {
+        setLoginStatus('error');
         console.error('Login failed', error);
       });
   };
@@ -69,6 +72,17 @@ function Login() {
         >
           Login
         </button>
+
+        {loginStatus === 'success' && (
+          <div className="mt-4 text-center text-green-600 font-semibold">
+            Login Success! Redirecting to home page...
+          </div>
+        )}
+        {loginStatus === 'error' && (
+          <div className="mt-4 text-center text-red-600 font-semibold">
+            Login Failed! Incorrect username or password.
+          </div>
+        )}
       </div>
     </div>
   );
