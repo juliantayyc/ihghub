@@ -79,6 +79,11 @@ const UpdateScore = () => {
   const [filteredFixtures, setFilteredFixtures] = useState([]);
   const [gameEnd, setGameEnd] = useState(false);
   const [finalWinner, setFinalWinner] = useState('');
+  const [secondPlace, setSecondPlace] = useState('');
+  const [thirdPlace, setThirdPlace] = useState('');
+  const [fourthPlace, setFourthPlace] = useState('');
+  const [fifthPlace, setFifthPlace] = useState('');
+  const [sixthPlace, setSixthPlace] = useState('');
 
   const filterFixtures = async () => {
     try {
@@ -98,10 +103,11 @@ const UpdateScore = () => {
       const game = response.data;
 
       if (game) {
-        await api.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
-          score1,
-          score2,
-        });
+        if (type !== 'Carnival')
+          await api.put(`${APP_SERVER_URL}/fixturesData/${game.id}/score`, {
+            score1,
+            score2,
+          });
 
         if (gameEnd) {
           await handleGameEndLogic(game);
@@ -118,6 +124,14 @@ const UpdateScore = () => {
   };
 
   const handleGameEndLogic = async (game) => {
+    if (type === 'Finals') {
+      await handleFinalsLogic(game);
+    } else if (type === 'Carnival') {
+      await handleCarnivalLogic(game);
+    }
+  };
+
+  const handleFinalsLogic = async (game) => {
     try {
       // Get the existing placing entry for the sport and sex
       const placingsResponse = await api.get(
@@ -137,17 +151,23 @@ const UpdateScore = () => {
       const finalLoser =
         finalWinner === selectedTeam1 ? selectedTeam2 : selectedTeam1;
 
+      console.log('ho');
+
       // Update final game winner and loser in placings
       await api.put(`${APP_SERVER_URL}/placingsData/${placingsData.id}`, {
         first: finalWinner,
         second: finalLoser,
       });
 
+      console.log('hi');
+
       // Get semi-final games
       const semiFinalGames = await getSemiFinalGames(
         selectedSport,
         selectedSex
       );
+
+      console.log(semiFinalGames);
 
       if (semiFinalGames.length !== 2) {
         setMessage('Could not find exactly two semi-final games.');
@@ -204,15 +224,43 @@ const UpdateScore = () => {
     }
   };
 
-  // const updateLeaderboard = async (hall, sex, score) => {
-  //   await api.post(`${APP_SERVER_URL}/leaderboardData`, { hall, sex, score });
-  // };
-
   const getSemiFinalGames = async (sport, sex) => {
     const response = await api.get(`${APP_SERVER_URL}/fixturesData/findSemis`, {
       params: { sport, sex, type: 'Semis' },
     });
     return response.data;
+  };
+
+  const handleCarnivalLogic = async (game) => {
+    try {
+      const placingsResponse = await api.get(
+        `${APP_SERVER_URL}/placingsData/search`,
+        {
+          params: { sport: selectedSport, sex: selectedSex },
+        }
+      );
+
+      const placingsData = placingsResponse.data;
+
+      if (!placingsData) {
+        setMessage('Placing entry not found.');
+        return;
+      }
+
+      await api.put(`${APP_SERVER_URL}/placingsData/${placingsData.id}`, {
+        first: finalWinner,
+        second: secondPlace,
+        third: thirdPlace,
+        fourth: fourthPlace,
+        fifth: fifthPlace,
+        sixth: sixthPlace,
+      });
+
+      setMessage('Placings updated successfully!');
+    } catch (error) {
+      console.error('Error updating placings:', error);
+      setMessage('Error updating placings');
+    }
   };
 
   const handleDateChange = (selectedDate) => {
@@ -344,27 +392,31 @@ const UpdateScore = () => {
           className="mt-1 block w-full p-2 border border-gray-300 bg-sky-100 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
           placeholderText="Select date"
         />
-        <input
-          type="number"
-          style={styles.input}
-          placeholder="Team 1 Score"
-          value={score1}
-          onChange={(e) => setScore1(e.target.value)}
-        />
-        <input
-          type="number"
-          style={styles.input}
-          placeholder="Team 2 Score"
-          value={score2}
-          onChange={(e) => setScore2(e.target.value)}
-        />
+        {type !== 'Carnival' && (
+          <>
+            <input
+              type="number"
+              style={styles.input}
+              placeholder="Team 1 Score"
+              value={score1}
+              onChange={(e) => setScore1(e.target.value)}
+            />
+            <input
+              type="number"
+              style={styles.input}
+              placeholder="Team 2 Score"
+              value={score2}
+              onChange={(e) => setScore2(e.target.value)}
+            />
+          </>
+        )}
         <label>
           <input
             type="checkbox"
             checked={gameEnd}
             onChange={(e) => setGameEnd(e.target.checked)}
           />{' '}
-          Game End
+          Game End/ Carnival Concluded
         </label>
         <select
           style={styles.input}
@@ -373,9 +425,112 @@ const UpdateScore = () => {
           onChange={(e) => setFinalWinner(e.target.value)}
         >
           <option value="">Select Final Winner</option>
-          <option value={selectedTeam1}>{selectedTeam1}</option>
-          <option value={selectedTeam2}>{selectedTeam2}</option>
+          {type === 'Carnival' ? (
+            teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))
+          ) : (
+            <>
+              <option value={selectedTeam1}>{selectedTeam1}</option>
+              <option value={selectedTeam2}>{selectedTeam2}</option>
+            </>
+          )}
         </select>
+        {type === 'Carnival' && (
+          <select
+            style={styles.input}
+            value={secondPlace}
+            name="secondPlace"
+            onChange={(e) => setSecondPlace(e.target.value)}
+          >
+            <option value="">Select Second Place</option>
+            {teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))}
+          </select>
+        )}
+        {type === 'Carnival' && (
+          <select
+            style={styles.input}
+            value={thirdPlace}
+            name="thirdPlace"
+            onChange={(e) => setThirdPlace(e.target.value)}
+          >
+            <option value="">Select Third Place</option>
+            {teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))}
+          </select>
+        )}
+        {type === 'Carnival' && (
+          <select
+            style={styles.input}
+            value={fourthPlace}
+            name="fourthPlace"
+            onChange={(e) => setFourthPlace(e.target.value)}
+          >
+            <option value="">Select Fourth Place</option>
+            {teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))}
+          </select>
+        )}
+        {type === 'Carnival' && (
+          <select
+            style={styles.input}
+            value={fifthPlace}
+            name="fifthPlace"
+            onChange={(e) => setFifthPlace(e.target.value)}
+          >
+            <option value="">Select Fifth Place</option>
+            {teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))}
+          </select>
+        )}
+        {type === 'Carnival' && (
+          <select
+            style={styles.input}
+            value={sixthPlace}
+            name="sixthPlace"
+            onChange={(e) => setSixthPlace(e.target.value)}
+          >
+            <option value="">Select Sixth Place</option>
+            {teamsOptions.map((team, index) => (
+              <option
+                key={index}
+                value={team}
+              >
+                {team}
+              </option>
+            ))}
+          </select>
+        )}
         <button
           type="submit"
           style={styles.button}

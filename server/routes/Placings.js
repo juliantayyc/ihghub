@@ -91,12 +91,22 @@ const calculateTotalScores = async () => {
 
   // Define scores based on placement
   const scores = {
-    first: 5,
-    second: 4,
-    third: 3,
-    fourth: 3,
-    fifth: 1,
-    sixth: 1,
+    regular: {
+      first: 5,
+      second: 4,
+      third: 3,
+      fourth: 3,
+      fifth: 1,
+      sixth: 1,
+    },
+    carnival: {
+      first: 6,
+      second: 5,
+      third: 4,
+      fourth: 3,
+      fifth: 2,
+      sixth: 1,
+    },
   };
 
   const totals = {};
@@ -120,12 +130,15 @@ const calculateTotalScores = async () => {
       }
     };
 
-    addScore('first', scores.first);
-    addScore('second', scores.second);
-    addScore('third', scores.third);
-    addScore('fourth', scores.fourth);
-    addScore('fifth', scores.fifth);
-    addScore('sixth', scores.sixth);
+    const sportScores =
+      entry.type === 'Carnival' ? scores.carnival : scores.regular;
+
+    addScore('first', sportScores.first);
+    addScore('second', sportScores.second);
+    addScore('third', sportScores.third);
+    addScore('fourth', sportScores.fourth);
+    addScore('fifth', sportScores.fifth);
+    addScore('sixth', sportScores.sixth);
   });
 
   return totals;
