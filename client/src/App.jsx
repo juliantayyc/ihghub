@@ -23,6 +23,11 @@ import UpdateScore from './components/UpdateScore';
 import ChangeUserRole from './components/ChangeUserRole';
 import { Route, Routes } from 'react-router-dom';
 import EmailVerified from './pages/EmailVerified';
+import Register from './pages/Register';
+import PlayerRegistration from './components/PlayerRegistration';
+import FormsPage from './components/FormsPage';
+import ManageRegistrations from './components/ManageRegistrations';
+import RegistrationDetailsPage from './components/RegistrationDetailsPage';
 
 const App = () => {
   return (
@@ -111,11 +116,27 @@ const App = () => {
             path="/changeUserRole"
             element={<ChangeUserRole />}
           ></Route>
-          {/* 501 page */}
           <Route
-            path="/registration"
-            element={<NotYetAdded />}
+            path="/register"
+            element={<Register />}
+          ></Route>
+          <Route
+            path="/registrationForm"
+            element={<PlayerRegistration />}
           />
+          <Route
+            path="/forms"
+            element={<FormsPage />}
+          />
+          <Route
+            path="/manageRegistrations"
+            element={<ManageRegistrations />}
+          />
+          <Route
+            path="/manageRegistrations/:fixtureId"
+            element={<RegistrationDetailsPage />}
+          />
+          {/* 501 page */}
 
           {/* 404 page */}
           <Route

@@ -87,7 +87,7 @@ const OfficialPanel = () => {
   };
 
   const handleRegistrationClick = () => {
-    navigate('/registration');
+    navigate('/manageRegistrations');
   };
 
   if (!userRole || (userRole !== 'official' && userRole !== 'admin')) {
