@@ -60,4 +60,24 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/:fixtureId', async (req, res) => {
+  const { fixtureId } = req.params;
+
+  try {
+    const fixture = await Fixtures.findByPk(fixtureId);
+
+    if (!fixture) {
+      return res.status(404).json({ error: 'Fixture not found.' });
+    }
+
+    const registrations = await Registrations.findAll({
+      where: { fixtureId },
+    });
+
+    res.json(registrations);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 module.exports = router;
