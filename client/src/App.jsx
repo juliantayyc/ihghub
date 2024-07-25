@@ -23,6 +23,9 @@ import UpdateScore from './components/UpdateScore';
 import ChangeUserRole from './components/ChangeUserRole';
 import { Route, Routes } from 'react-router-dom';
 import EmailVerified from './pages/EmailVerified';
+import Register from './pages/Register';
+import PlayerRegistration from './components/PlayerRegistration';
+import FormsPage from './components/FormsPage';
 
 const App = () => {
   return (
@@ -111,6 +114,18 @@ const App = () => {
             path="/changeUserRole"
             element={<ChangeUserRole />}
           ></Route>
+          <Route
+            path="/register"
+            element={<Register />}
+          ></Route>
+          <Route
+            path="/registrationForm"
+            element={<PlayerRegistration />}
+          />
+          <Route
+            path="/forms"
+            element={<FormsPage />}
+          />
           {/* 501 page */}
           <Route
             path="/registration"
