@@ -12,11 +12,30 @@ const PlayerRegistration = () => {
     name: '',
     nric: '',
     hall: '',
+    matriculationNumber: '',
+    dateOfBirth: '',
+    medicalHistory: '',
+    drugAllergies: '',
+    bloodType: '',
+    parQ: 'N', // Default to 'N'
     emergencyContactName: '',
     emergencyContactNumber: '',
   });
 
+  const [parQAnswers, setParQAnswers] = useState({
+    parQ1: 'N',
+    parQ2: 'N',
+    parQ3: 'N',
+    parQ4: 'N',
+    parQ5: 'N',
+    parQ6: 'N',
+    parQ7: 'N',
+    parQ8: 'N',
+    // Add more questions here
+  });
+
   const [nricError, setNricError] = useState('');
+  const [matriculationNumberError, setMatriculationNumberError] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -26,10 +45,29 @@ const PlayerRegistration = () => {
       ...prevData,
       [name]: value,
     }));
-    // Reset NRIC error when the user starts typing
+    // Reset errors when the user starts typing
     if (name === 'nric' && value.length === 4) {
       setNricError('');
     }
+    if (name === 'matriculationNumber' && /^[aA].{8}$/.test(value)) {
+      setMatriculationNumberError('');
+    }
+  };
+
+  const handleParQChange = (e) => {
+    const { name, value } = e.target;
+    setParQAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [name]: value,
+    }));
+    // Determine the value of parQ based on all answers
+    const allNo = Object.values({ ...parQAnswers, [name]: value }).every(
+      (answer) => answer === 'N'
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      parQ: allNo ? 'Y' : 'N',
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -37,6 +75,13 @@ const PlayerRegistration = () => {
     // Check if NRIC is exactly 4 characters
     if (formData.nric.length !== 4) {
       setNricError('NRIC must be exactly 4 characters long.');
+      return;
+    }
+    // Check if matriculation number is valid
+    if (!/^[aA].{8}$/.test(formData.matriculationNumber)) {
+      setMatriculationNumberError(
+        'Matriculation number must start with "A" or "a" and be exactly 9 characters long.'
+      );
       return;
     }
     try {
@@ -79,7 +124,9 @@ const PlayerRegistration = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">NRIC</label>
+          <label className="block text-sm font-medium">
+            NRIC/ Passport Number (Last 4 Characters)
+          </label>
           <input
             type="text"
             name="nric"
@@ -111,6 +158,247 @@ const PlayerRegistration = () => {
               </option>
             ))}
           </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium">
+            Matriculation Number
+          </label>
+          <input
+            type="text"
+            name="matriculationNumber"
+            value={formData.matriculationNumber}
+            onChange={handleChange}
+            className="bg-orange-200 w-full p-2 border border-gray-300 rounded"
+            required
+          />
+          {matriculationNumberError && (
+            <p className="text-red-500 text-sm mt-1">
+              {matriculationNumberError}
+            </p>
+          )}
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Date of Birth</label>
+          <input
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            className="bg-orange-200 w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Medical History</label>
+          <textarea
+            name="medicalHistory"
+            value={formData.medicalHistory}
+            onChange={handleChange}
+            className="bg-orange-200 w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Drug Allergies</label>
+          <textarea
+            name="drugAllergies"
+            value={formData.drugAllergies}
+            onChange={handleChange}
+            className="bg-orange-200 w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Blood Type</label>
+          <input
+            type="text"
+            name="bloodType"
+            value={formData.bloodType}
+            onChange={handleChange}
+            className="bg-orange-200 w-full p-2 border border-gray-300 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">PAR-Q</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">
+              Has a doctor ever said that you have a heart condition and that
+              you should only do physical activity recommended by a doctor?
+              <input
+                type="radio"
+                name="parQ1"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ1"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Do you feel pain in your chest when you do physical activity?
+              <input
+                type="radio"
+                name="parQ2"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ2"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              In the past month, have you had chest pain when you were not doing
+              physical activity?
+              <input
+                type="radio"
+                name="parQ3"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ3"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Do you lose your balance because of dizziness or do you ever lose
+              consciousness?
+              <input
+                type="radio"
+                name="parQ4"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ4"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Do you have a bone or joint problem that could be made worse by a
+              change in your physical activity?
+              <input
+                type="radio"
+                name="parQ5"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ5"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Is your doctor currently prescribing drugs (for example, water
+              pills) for your blood pressure or heart condition?
+              <input
+                type="radio"
+                name="parQ6"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ6"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Do you know of any other reasons why you should not do physical
+              activity?
+              <input
+                type="radio"
+                name="parQ7"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ7"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            <label className="block text-sm font-medium">
+              Do you currently participate in any regular activity program
+              designed to improve or maintain your physical fitness?
+              <input
+                type="radio"
+                name="parQ8"
+                value="Y"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              Yes
+              <input
+                type="radio"
+                name="parQ8"
+                value="N"
+                onChange={handleParQChange}
+                className="ml-2"
+                required
+              />{' '}
+              No
+            </label>
+            {/* Add more PAR-Q questions similarly */}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium">

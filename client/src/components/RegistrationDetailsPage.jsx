@@ -61,10 +61,28 @@ const RegistrationDetailsPage = () => {
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  NRIC
+                  NRIC/ Passport No.
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Hall
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Matriculation Number
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date of Birth
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Medical History
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Drug Allergies
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Blood Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Par-Q
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Emergency Contact Name
@@ -85,6 +103,24 @@ const RegistrationDetailsPage = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {registration.hall}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.matriculationNumber}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.dateOfBirth}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.medicalHistory}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.drugAllergies}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.bloodType}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {registration.parQ}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {registration.emergencyContactName}
