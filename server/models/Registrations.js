@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [
         {
           unique: true,
-          fields: ['matriculationNumber'],
+          fields: ['matriculationNumber', 'fixtureId'],
         },
       ],
     }
@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
     Registrations.belongsTo(models.Fixtures, {
       foreignKey: 'fixtureId',
       as: 'fixtures',
+    });
+    Registrations.hasMany(models.LineUps, {
+      foreignKey: 'registrationId',
+      as: 'lineups',
     });
   };
 

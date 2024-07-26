@@ -4,7 +4,7 @@ import api from '../util/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { APP_SERVER_URL } from '../constants';
 
-const Register = () => {
+const ManagerPanel = () => {
   const [fixtures, setFixtures] = useState([]);
   const [filter, setFilter] = useState({
     team: '',
@@ -67,7 +67,7 @@ const Register = () => {
   };
 
   const handleCardClick = (fixture) => {
-    navigate(`/registrationForms`, {
+    navigate(`/lineUpForms`, {
       state: {
         fixtureId: fixture.id,
         team1: fixture.team1,
@@ -91,7 +91,7 @@ const Register = () => {
       id="fixtures"
       className="py-10"
     >
-      <h2 className="h2 text-center mb-8">Register for Games</h2>
+      <h2 className="h2 text-center mb-8">Manage Line-Ups</h2>
       <div className="container mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Dropdown
@@ -158,4 +158,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ManagerPanel;

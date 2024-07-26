@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { APP_SERVER_URL } from '../constants';
 
-const PlayerRegistration = () => {
+const UpdateRegistrationForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { fixtureId, team1, team2 } = location.state;
@@ -39,6 +39,40 @@ const PlayerRegistration = () => {
   const [submitError, setSubmitError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  useEffect(() => {
+    if (formData.matriculationNumber) {
+      console.log('hee');
+      // Fetch existing registration data when matriculation number is entered
+      const fetchRegistrationData = async () => {
+        try {
+          const response = await axios.get(
+            `${APP_SERVER_URL}/registrationsData/findRegistration/${fixtureId}/${formData.matriculationNumber}`
+          );
+          console.log(response.data);
+          if (response.data) {
+            setFormData(response.data);
+            setParQAnswers({
+              parQ1: response.data.parQ1,
+              parQ2: response.data.parQ2,
+              parQ3: response.data.parQ3,
+              parQ4: response.data.parQ4,
+              parQ5: response.data.parQ5,
+              parQ6: response.data.parQ6,
+              parQ7: response.data.parQ7,
+              parQ8: response.data.parQ8,
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching registration data:', error);
+          setSubmitError(
+            'Could not find registration with that matriculation number.'
+          );
+        }
+      };
+      fetchRegistrationData();
+    }
+  }, [formData.matriculationNumber]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -72,9 +106,11 @@ const PlayerRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
     // Check if NRIC is exactly 4 characters
     if (formData.nric.length !== 4) {
       setNricError('NRIC must be exactly 4 characters long.');
+      console.log('ho');
       return;
     }
     // Check if matriculation number is valid
@@ -85,15 +121,18 @@ const PlayerRegistration = () => {
       return;
     }
     try {
-      await axios.post(`${APP_SERVER_URL}/registrationsData`, {
-        ...formData,
-        fixtureId,
-      });
-      setSuccessMessage('Registration successful!');
+      await axios.put(
+        `${APP_SERVER_URL}/registrationsData/${fixtureId}/${formData.matriculationNumber}`,
+        {
+          ...formData,
+          fixtureId,
+        }
+      );
+      setSuccessMessage('Registration updated successfully!');
       setSubmitError(''); // Clear any previous errors
     } catch (error) {
-      console.error('Error submitting registration:', error);
-      setSubmitError('There was an error submitting the registration.');
+      console.error('Error updating registration:', error);
+      setSubmitError('There was an error updating the registration.');
       setSuccessMessage(''); // Clear any previous success messages
     }
   };
@@ -107,7 +146,7 @@ const PlayerRegistration = () => {
 
   return (
     <div className="container mx-auto my-10">
-      <h2 className="text-2xl font-bold mb-5">Submit Registration Form</h2>
+      <h2 className="text-2xl font-bold mb-5">Update Registration Form</h2>
       <form
         onSubmit={handleSubmit}
         className="space-y-4"
@@ -445,4 +484,4 @@ const PlayerRegistration = () => {
   );
 };
 
-export default PlayerRegistration;
+export default UpdateRegistrationForm;

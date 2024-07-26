@@ -24,10 +24,15 @@ import ChangeUserRole from './components/ChangeUserRole';
 import { Route, Routes } from 'react-router-dom';
 import EmailVerified from './pages/EmailVerified';
 import Register from './pages/Register';
+import RegistrationForms from './components/RegistrationForms';
 import PlayerRegistration from './components/PlayerRegistration';
-import FormsPage from './components/FormsPage';
+import UpdateRegistrationForm from './components/UpdateRegistrationForm';
 import ManageRegistrations from './components/ManageRegistrations';
 import RegistrationDetailsPage from './components/RegistrationDetailsPage';
+import ManagerPanel from './pages/ManagerPanel';
+import LineUpForms from './components/LineUpForms';
+import SubmitLineUps from './components/SubmitLineUps';
+import UpdateLineUps from './components/UpdateLineUps';
 
 const App = () => {
   return (
@@ -121,12 +126,16 @@ const App = () => {
             element={<Register />}
           ></Route>
           <Route
-            path="/registrationForm"
+            path="/registrationForms"
+            element={<RegistrationForms />}
+          />
+          <Route
+            path="/submitRegistrationForm"
             element={<PlayerRegistration />}
           />
           <Route
-            path="/forms"
-            element={<FormsPage />}
+            path="/updateRegistrationForm"
+            element={<UpdateRegistrationForm />}
           />
           <Route
             path="/manageRegistrations"
@@ -135,6 +144,22 @@ const App = () => {
           <Route
             path="/manageRegistrations/:fixtureId"
             element={<RegistrationDetailsPage />}
+          />
+          <Route
+            path="/manager"
+            element={<ManagerPanel />}
+          ></Route>
+          <Route
+            path="/lineUpForms"
+            element={<LineUpForms />}
+          />
+          <Route
+            path="/submitLineUps"
+            element={<SubmitLineUps />}
+          />
+          <Route
+            path="/updateLineUps"
+            element={<UpdateLineUps />}
           />
           {/* 501 page */}
 

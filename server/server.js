@@ -34,6 +34,9 @@ app.use('/venuesData', venuesRouter);
 const registrationsRouter = require('./routes/Registrations');
 app.use('/registrationsData', registrationsRouter);
 
+const lineUpsRouter = require('./routes/LineUps');
+app.use('/lineUpsData', lineUpsRouter);
+
 const authRouter = require('./routes/Auth');
 app.use('/auth', authRouter);
 
