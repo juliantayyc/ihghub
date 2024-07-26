@@ -74,22 +74,27 @@ export const navigation = [
   },
   {
     id: '5',
+    title: 'Manager Panel',
+    url: '/manager',
+  },
+  {
+    id: '6',
     title: 'Official Panel',
     url: '/official',
   },
   {
-    id: '6',
+    id: '7',
     title: 'Admin Panel',
     url: '/admin',
   },
   {
-    id: '7',
+    id: '8',
     title: 'New account',
     url: '/signup',
     onlyMobile: true,
   },
   {
-    id: '8',
+    id: '9',
     title: 'Log in',
     url: '/login',
     onlyMobile: true,

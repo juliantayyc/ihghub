@@ -14,6 +14,30 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('TH', 'EH', 'KR', 'SH', 'RH', 'KE'),
         allowNull: false,
       },
+      matriculationNumber: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      dateOfBirth: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      medicalHistory: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      drugAllergies: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      bloodType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      parQ: {
+        type: DataTypes.ENUM('Y', 'N'),
+        allowNull: false,
+      },
       emergencyContactName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -35,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [
         {
           unique: true,
-          fields: ['name', 'nric', 'hall', 'fixtureId'],
+          fields: ['matriculationNumber', 'fixtureId'],
         },
       ],
     }
@@ -45,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
     Registrations.belongsTo(models.Fixtures, {
       foreignKey: 'fixtureId',
       as: 'fixtures',
+    });
+    Registrations.hasMany(models.LineUps, {
+      foreignKey: 'registrationId',
+      as: 'lineups',
     });
   };
 
