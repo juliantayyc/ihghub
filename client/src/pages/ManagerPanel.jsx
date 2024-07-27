@@ -3,6 +3,7 @@ import Dropdown from '../components/Dropdown';
 import api from '../util/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { APP_SERVER_URL } from '../constants';
+import Forbidden from '../components/Forbidden';
 
 const ManagerPanel = () => {
   const [fixtures, setFixtures] = useState([]);
@@ -12,12 +13,41 @@ const ManagerPanel = () => {
     sex: '',
   });
   const [venuesMap, setVenuesMap] = useState({});
+  const [userRole, setUserRole] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
+    fetchUserRole();
     fetchTodaysGames();
     fetchVenues();
   }, []);
+
+  const fetchUserRole = async () => {
+    try {
+      const accessToken = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('accessToken='))
+        ?.split('=')[1];
+
+      if (accessToken) {
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        setUserRole(payload.role);
+      } else {
+        // Access token is expired, attempt to refresh
+        const response = await api.post('/auth/refresh-token', {});
+        const { accessToken: newAccessToken } = response.data;
+
+        // Update the access token in cookies and state
+        document.cookie = `accessToken=${newAccessToken}; SameSite=Lax;`;
+        const newPayload = JSON.parse(atob(newAccessToken.split('.')[1]));
+        setUserRole(newPayload.role);
+      }
+    } catch (error) {
+      // Handle errors or unauthorized state
+      console.log('Error fetching user role:', error);
+      navigate('/login'); // Redirect to login page or handle as needed
+    }
+  };
 
   const fetchTodaysGames = async () => {
     try {
@@ -85,6 +115,10 @@ const ManagerPanel = () => {
       (!filter.sex || fixture.sex === filter.sex)
     );
   });
+
+  if (!userRole || !['manager', 'official', 'admin'].includes(userRole)) {
+    return <Forbidden />;
+  }
 
   return (
     <div
