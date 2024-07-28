@@ -18,9 +18,15 @@ const Venues = () => {
     const fetchVenues = async () => {
       try {
         const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
-        console.log('Fetched venues:', response.data); // Log the fetched venues
-        setVenues(response.data);
-        return response.data;
+        console.log('Response from venuesData endpoint:', response); // Log the entire response
+        if (response.data && response.data.length > 0) {
+          console.log('Fetched venues:', response.data); // Log the fetched venues
+          return response.data;
+        } else {
+          console.error('No data in response:', response.data); // Log if response has no data
+          setError('No venues found');
+          return [];
+        }
       } catch (error) {
         console.error('Error fetching venues:', error);
         setError('Failed to load venues');
@@ -56,11 +62,20 @@ const Venues = () => {
       if (fetchedVenues.length > 0) {
         const venuesWithWeather = await Promise.all(
           fetchedVenues.map(async (venue) => {
-            const weather = await fetchWeatherData(
-              venue.latitude,
-              venue.longitude
-            );
-            return { ...venue, weather };
+            try {
+              const weather = await fetchWeatherData(
+                venue.latitude,
+                venue.longitude
+              );
+              console.log(`Weather for venue ${venue.name}:`, weather); // Log weather for each venue
+              return { ...venue, weather };
+            } catch (error) {
+              console.error(
+                `Error fetching weather for venue ${venue.name}:`,
+                error
+              );
+              return { ...venue, weather: null };
+            }
           })
         );
         console.log('Venues with weather data:', venuesWithWeather); // Log the venues with weather data
@@ -68,7 +83,7 @@ const Venues = () => {
       } else {
         console.error('No venues found'); // Log if no venues are found
       }
-      setLoading(false);
+      setLoading(false); // Ensure loading is set to false
     };
 
     const fetchWeather = async () => {
