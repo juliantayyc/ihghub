@@ -90,7 +90,10 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const user = await Users.findOne({ where: { username: username } });
-  if (!user) return res.status(401).send('Username not found. Yet to sign up'); // Unauthorized
+  if (!user) return res.status(401).send('Username not found.'); // Unauthorized
+
+  // Check if the user is verified
+  if (!user.isVerified) return res.status(401).send('Email not verified'); // Unauthorized
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) return res.status(401).send('Wrong Password'); // Unauthorized
