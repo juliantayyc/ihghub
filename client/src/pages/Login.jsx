@@ -7,6 +7,7 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginStatus, setLoginStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const login = () => {
@@ -23,6 +24,7 @@ function Login() {
       })
       .catch((error) => {
         setLoginStatus('error');
+        setErrorMessage(error.response.data); // Set the error message from the server response
         console.error('Login failed', error);
       });
   };
@@ -80,7 +82,7 @@ function Login() {
         )}
         {loginStatus === 'error' && (
           <div className="mt-4 text-center text-red-600 font-semibold">
-            Login Failed! Incorrect username or password.
+            Login Failed! {errorMessage}
           </div>
         )}
       </div>
