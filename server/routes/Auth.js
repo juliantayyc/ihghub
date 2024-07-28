@@ -15,7 +15,7 @@ const createTokens = async (user, generateRefreshToken = false) => {
       role: user.role,
     },
     process.env.JWT_ACCESS_TOKEN_SECRET,
-    { expiresIn: '5m' }
+    { expiresIn: '50m' }
   );
 
   let refreshToken = null;
@@ -117,7 +117,7 @@ router.post('/login', async (req, res) => {
     httpOnly: false,
     sameSite: process.env.NODE_ENV === 'Lax',
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 300000, // 5 minutes
+    maxAge: 3000000, // 5 minutes
   });
 
   res.json({
@@ -153,7 +153,7 @@ router.post('/refresh-token', async (req, res) => {
         httpOnly: false,
         sameSite: process.env.NODE_ENV === 'Lax',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 300000, // 5 minutes
+        maxAge: 3000000, // 5 minutes
       });
 
       res.json({ accessToken });
