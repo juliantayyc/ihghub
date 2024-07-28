@@ -18,25 +18,22 @@ const Venues = () => {
     const fetchVenues = async () => {
       try {
         const response = await axios.get(`${APP_SERVER_URL}/venuesData`);
-        const venuesWithWeather = await Promise.all(
-          response.data.map(async (venue) => {
-            const weather = await fetchWeatherData(
-              venue.latitude,
-              venue.longitude
-            );
-            return { ...venue, weather };
-          })
-        );
-        setVenues(venuesWithWeather);
+        console.log('Fetched venues:', response.data); // Log the fetched venues
+        setVenues(response.data);
+        return response.data;
       } catch (error) {
         console.error('Error fetching venues:', error);
         setError('Failed to load venues');
-      } finally {
-        setLoading(false);
+        return [];
       }
     };
 
     const fetchWeatherData = async (lat, lon) => {
+      if (!lat || !lon) {
+        console.error('Invalid coordinates:', lat, lon); // Log invalid coordinates
+        return null;
+      }
+
       try {
         const response = await axios.get(WEATHER_API_URL, {
           params: {
@@ -46,11 +43,32 @@ const Venues = () => {
             appid: WEATHER_API_KEY,
           },
         });
+        console.log('Fetched weather data:', response.data); // Log the fetched weather data
         return response.data;
       } catch (error) {
         console.error('Error fetching weather data:', error);
         return null;
       }
+    };
+
+    const fetchVenuesWithWeather = async () => {
+      const fetchedVenues = await fetchVenues();
+      if (fetchedVenues.length > 0) {
+        const venuesWithWeather = await Promise.all(
+          fetchedVenues.map(async (venue) => {
+            const weather = await fetchWeatherData(
+              venue.latitude,
+              venue.longitude
+            );
+            return { ...venue, weather };
+          })
+        );
+        console.log('Venues with weather data:', venuesWithWeather); // Log the venues with weather data
+        setVenues(venuesWithWeather);
+      } else {
+        console.error('No venues found'); // Log if no venues are found
+      }
+      setLoading(false);
     };
 
     const fetchWeather = async () => {
@@ -63,14 +81,15 @@ const Venues = () => {
             appid: WEATHER_API_KEY,
           },
         });
+        console.log('Fetched NUS weather:', response.data); // Log the fetched NUS weather data
         setWeather(response.data);
       } catch (error) {
-        console.error('Error fetching weather:', error);
+        console.error('Error fetching NUS weather:', error);
         setError('Failed to load weather');
       }
     };
 
-    fetchVenues();
+    fetchVenuesWithWeather();
     fetchWeather();
   }, []);
 
